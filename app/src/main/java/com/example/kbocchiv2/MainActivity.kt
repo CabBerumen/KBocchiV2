@@ -1,14 +1,20 @@
 package com.example.kbocchiv2
 
+import android.Manifest
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -17,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 
+@Suppress("DEPRECATED_IDENTITY_EQUALS")
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     var boton: Button? = null
     var archivo: SharedPreferences? = null
@@ -26,6 +33,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var mAuth: FirebaseAuth? = null
     var mGoogleSignInClient: GoogleSignInClient? = null
     var btnspeech: ImageButton? = null
+
+    private var speechToText: SpeechToText? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -53,12 +64,54 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawerLayout?.addDrawerListener(toogle)
         toogle.syncState()
+
+        btnspeech?.setOnClickListener(View.OnClickListener { startSpeechToText() })
+
+        speechToText = SpeechToText(this)
+
     }
+
+    private fun startSpeechToText() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO
+            ) !== PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf<String>(Manifest.permission.RECORD_AUDIO),
+                MainActivity.REQUEST_PERMISSION
+            )
+        } else {
+            speechToText!!.startListening()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == MainActivity.REQUEST_PERMISSION && grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            speechToText!!.startListening()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        speechToText!!.destroy()
+    }
+
+    fun displayResult(result: String?) {
+        Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+    }
+
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_item3 -> {
-                val intent = Intent(this, Maps::class.java)
+                val intent = Intent(this, LogIn::class.java)
                 startActivity(intent)
                 finish()
             }
@@ -85,5 +138,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             super.onBackPressed()
         }
+    }
+
+    companion object {
+        private const val REQUEST_PERMISSION = 1
     }
 }
