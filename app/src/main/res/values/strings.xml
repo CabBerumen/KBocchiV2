@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">KBocchiV2</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+
+    <string name="nav_item0">Home</string>
+    <string name="nav_item1">Agenda</string>
+    <string name="nav_item2">Chat</string>
+    <string name="nav_item3">Mapa</string>
+    <string name="nav_item4">Expedientes</string>
+    <string name="nav_item5">Configuración</string>
+
+
 </resources>
