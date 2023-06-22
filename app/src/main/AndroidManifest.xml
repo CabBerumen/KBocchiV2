@@ -17,7 +17,22 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".DatosPacientes"
+            android:exported="false" />
+        <activity
+            android:name=".Pacientes"
+            android:exported="false" />
+        <activity
+            android:name=".Perfil"
+            android:exported="false" />
+        <activity
             android:name=".chat"
+            android:exported="false" />
+        <activity
+            android:name=".Agenda"
+            android:exported="false" />
+        <activity
+            android:name=".Maps"
             android:exported="false" />
         <activity
             android:name=".Splash"

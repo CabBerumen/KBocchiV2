@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D8F6E7"
+    tools:context=".Pacientes">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"/>
+
+     <ListView
+         android:id="@+id/listapacientes"
+         android:layout_gravity="center"
+         android:layout_width="300dp"
+         android:layout_height="wrap_content"
+         android:divider="@android:color/darker_gray"
+         tools:listitem="@android:layout/simple_list_item_1"
+         android:dividerHeight="1dp"
+         android:paddingTop="8dp"
+         android:paddingBottom="8dp"
+         android:background="@drawable/listview_background"
+         />
+
+
+
+    </LinearLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>

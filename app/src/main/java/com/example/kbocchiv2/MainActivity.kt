@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.kbocchiv2.Request.SpeechToText
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -33,7 +34,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var mAuth: FirebaseAuth? = null
     var mGoogleSignInClient: GoogleSignInClient? = null
     var btnspeech: ImageButton? = null
-
     private var speechToText: SpeechToText? = null
 
 
@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mAuth = FirebaseAuth.getInstance()
         btnspeech = findViewById(R.id.btnSpeech)
         navigationView?.setNavigationItemSelectedListener(this)
+
+
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -111,7 +113,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_item3 -> {
-                val intent = Intent(this, LogIn::class.java)
+                val intent = Intent(this, Maps::class.java)
                 startActivity(intent)
                 finish()
             }
@@ -126,6 +128,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, LogIn::class.java)
                 startActivity(intent)
                 finish()
+            }
+            R.id.nav_perfil -> {
+                val intent = Intent(this, Perfil::class.java)
+                startActivity(intent)
+            }
+            R.id.nav_pacientes -> {
+                val intent = Intent(this, Pacientes::class.java)
+                startActivity(intent)
             }
         }
         drawerLayout!!.closeDrawer(GravityCompat.START)

@@ -1,11 +1,12 @@
 package com.example.kbocchiv2
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.kbocchiv2.Interfaces.ApiService
 import com.example.kbocchiv2.Request.LoginRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -17,16 +18,19 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import okhttp3.OkHttp
-import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import okio.IOException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.ResponseBody
+import okio.buffer
+import okio.source
 
 class LogIn : AppCompatActivity() {
+
 
     private val BASE_URL = "https://kbocchi.onrender.com/"
     private val RC_SIGN_IN = 1
@@ -40,6 +44,8 @@ class LogIn : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
 
     private lateinit var mSignInButtonGoogle: SignInButton
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +76,7 @@ class LogIn : AppCompatActivity() {
             val loggin = HttpLoggingInterceptor()
             loggin.level = HttpLoggingInterceptor.Level.BODY
 
-            val httpClient = OkHttpClient.Builder()
+            val httpClient = okhttp3.OkHttpClient.Builder()
             httpClient.addInterceptor(loggin)
             val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -102,7 +108,10 @@ class LogIn : AppCompatActivity() {
             })
         }
 
+
+
     }
+
 
     override fun onStart() {
         super.onStart()
