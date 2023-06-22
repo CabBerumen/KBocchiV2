@@ -11,7 +11,8 @@
     <string name="nav_item3">Mapa</string>
     <string name="nav_item4">Expedientes</string>
     <string name="nav_item5">Configuración</string>
-
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

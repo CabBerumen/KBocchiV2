@@ -7,12 +7,11 @@ public class LoginRequest {
 
     private String token;
 
+
     public LoginRequest(String email, String contrasena) {
         this.email = email;
         this.contrasena = contrasena;
     }
-
-
     public String getUsername() {
         return email;
     }
