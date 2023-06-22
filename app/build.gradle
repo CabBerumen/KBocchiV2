@@ -100,6 +100,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-storage'
 
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+
 
     implementation "androidx.drawerlayout:drawerlayout:1.2.0"
     implementation ('io.socket:socket.io-client:2.0.0') {

@@ -1,12 +1,16 @@
 package com.example.kbocchiv2
 
+import POJO.RequestPacientes
+import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.example.kbocchiv2.Interfaces.ApiService
 import com.example.kbocchiv2.Request.LoginRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -45,8 +49,7 @@ class LogIn : AppCompatActivity() {
 
     private lateinit var mSignInButtonGoogle: SignInButton
 
-
-
+    public lateinit var terapeutas : LoginRequest
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +58,18 @@ class LogIn : AppCompatActivity() {
         editpass = findViewById(R.id.pass);
         botonlogin = findViewById(R.id.login)
         mSignInButtonGoogle = findViewById(R.id.btngoogle)
+
+        terapeutas = LoginRequest()
+
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val token = sharedPreferences.getString("token", null)
+        if (token != null) {
+            val inicio = Intent(this, MainActivity::class.java)
+            inicio.putExtra("id", token)
+            startActivity(inicio)
+            finish() // Finalizar la actividad actual para que no se pueda volver atrás
+        }
 
         mAuth = FirebaseAuth.getInstance()
 
@@ -89,12 +104,34 @@ class LogIn : AppCompatActivity() {
                     if (response.isSuccessful && response.body() != null){
                         editusuario.text.clear()
                         editpass.text.clear()
-                        val tokenInter = response.body()!!.token
+
+                        terapeutas = response.body()!!
+
+                        val tokenInter = terapeutas.terapeuta.id
+
+                        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@LogIn)
+                        val editor = sharedPreferences.edit()
+                        editor.putString("token", tokenInter.toString())
+                        editor.apply()
 
                         val inicio = Intent(this@LogIn, MainActivity::class.java)
-                        inicio.putExtra("token", tokenInter)
+                        inicio.putExtra("id", tokenInter)
+                        inicio.putExtra("email", terapeutas.email)
+                        inicio.putExtra("nombre", terapeutas.nombre)
+                        inicio.putExtra("telefono", terapeutas.telefono)
+                        inicio.putExtra("domicilio", terapeutas.terapeuta.domicilio)
+                        inicio.putExtra("nombre_del_consultorio", terapeutas.terapeuta.nombreDelConsultorio)
+                        inicio.putExtra("numero_cedula", terapeutas.terapeuta.numeroCedula)
+                        inicio.putExtra("pago_maximo", terapeutas.terapeuta.pagoMaximo)
+                        inicio.putExtra("pago_minimo", terapeutas.terapeuta.pagoMinimo)
+                        inicio.putExtra("rango_servicio", terapeutas.terapeuta.rangoServicio)
+                        inicio.putExtra("foto_perfil", terapeutas.fotoPerfil)
+
                         startActivity(inicio)
+
+
                         Toast.makeText(this@LogIn, "Inicio de sesion exitoso", Toast.LENGTH_SHORT).show()
+
 
                     } else {
                         Toast.makeText(this@LogIn, "Datos Incorrectos", Toast.LENGTH_SHORT).show()
@@ -107,8 +144,6 @@ class LogIn : AppCompatActivity() {
                 }
             })
         }
-
-
 
     }
 
@@ -170,6 +205,5 @@ class LogIn : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
-
 
 }

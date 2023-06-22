@@ -1,6 +1,5 @@
 package POJO;
 
-
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -24,6 +23,7 @@ public class RequestPacientes{
     @SerializedName("foto_perfil")
     @Expose
     private String fotoPerfil;
+
 
     public Integer getId() {
         return id;
@@ -72,5 +72,6 @@ public class RequestPacientes{
     public void setFotoPerfil(String fotoPerfil) {
         this.fotoPerfil = fotoPerfil;
     }
+
 
 }

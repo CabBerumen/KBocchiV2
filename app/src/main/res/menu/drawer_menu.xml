@@ -27,6 +27,7 @@
             android:title="@string/nav_item4"/>
         <item
             android:id = "@+id/nav_pacientes"
+            android:icon = "@drawable/nav_paciente"
             android:title="Pacientes"/>
 
     </group>
@@ -34,10 +35,6 @@
     <item
         android:title="">
         <menu>
-            <item
-                android:id = "@+id/nav_perfil"
-                android:icon ="@drawable/nav_profile"
-                android:title="Perfil"/>
             <item
                 android:id = "@+id/nav_item5"
                 android:icon ="@drawable/nave_settings"

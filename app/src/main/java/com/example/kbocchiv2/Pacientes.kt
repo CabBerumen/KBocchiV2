@@ -9,6 +9,7 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.example.kbocchiv2.Interfaces.ApiService
 import okhttp3.*
 import retrofit2.Call
@@ -30,6 +31,7 @@ class Pacientes : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pacientes)
 
+
         listView = findViewById<ListView>(R.id.listapacientes)
         pacientes = ArrayList()
 
@@ -44,8 +46,10 @@ class Pacientes : AppCompatActivity() {
             .build()
 
         val apiService = retrofit.create(ApiService::class.java) // Reemplaza "ApiService" con el nombre de tu interfaz de servicio
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val token = sharedPreferences.getString("token", null)
 
-        val call = apiService.obtenerPacientes(218) // Reemplaza "obtenerPacientes" con el nombre del método de tu API para obtener los datos de los pacientes
+        val call = apiService.obtenerPacientes(token) // Reemplaza "obtenerPacientes" con el nombre del método de tu API para obtener los datos de los pacientes
 
         call.enqueue(object : Callback<List<RequestPacientes>> {
             override fun onResponse(call: Call<List<RequestPacientes>>, response: Response<List<RequestPacientes>>) {
