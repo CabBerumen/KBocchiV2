@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D8F6E7"
+    android:background="#D7EEF8"
+    android:id="@+id/drawer_layout"
     tools:context=".Pacientes">
 
     <LinearLayout
@@ -33,5 +34,20 @@
 
 
     </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:background="#8CD3F3"
+        android:id="@+id/navigation_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        >
+
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

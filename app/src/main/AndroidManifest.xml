@@ -17,16 +17,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Perfil"
+            android:exported="false" />
+        <activity
             android:name=".DatosPacientes"
             android:exported="false" />
         <activity
             android:name=".Pacientes"
-            android:exported="false" />
-        <activity
-            android:name=".Perfil"
-            android:exported="false" />
-        <activity
-            android:name=".chat"
             android:exported="false" />
         <activity
             android:name=".Agenda"
@@ -55,6 +52,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

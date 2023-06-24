@@ -2,6 +2,7 @@ package com.example.kbocchiv2
 
 import POJO.RequestPacientes
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -116,6 +117,10 @@ class LogIn : AppCompatActivity() {
 
                         val inicio = Intent(this@LogIn, MainActivity::class.java)
                         inicio.putExtra("id", tokenInter)
+                        startActivity(inicio)
+                        finish()
+
+                        /*
                         inicio.putExtra("email", terapeutas.email)
                         inicio.putExtra("nombre", terapeutas.nombre)
                         inicio.putExtra("telefono", terapeutas.telefono)
@@ -126,12 +131,24 @@ class LogIn : AppCompatActivity() {
                         inicio.putExtra("pago_minimo", terapeutas.terapeuta.pagoMinimo)
                         inicio.putExtra("rango_servicio", terapeutas.terapeuta.rangoServicio)
                         inicio.putExtra("foto_perfil", terapeutas.fotoPerfil)
-
                         startActivity(inicio)
+                        */
 
+                        val sharedPreferences2 = getSharedPreferences("DatosPerfil", Context.MODE_PRIVATE)
+                        val editor2 = sharedPreferences2.edit()
+                        editor2.putString("email", terapeutas.email)
+                        editor2.putString("nombre", terapeutas.nombre)
+                        editor2.putString("telefono", terapeutas.telefono)
+                        editor2.putString("domicilio", terapeutas.terapeuta.domicilio)
+                        editor2.putString("nombre_del_consultorio", terapeutas.terapeuta.nombreDelConsultorio)
+                        editor2.putString("numero_cedula", terapeutas.terapeuta.numeroCedula)
+                        editor2.putString("pago_maximo", terapeutas.terapeuta.pagoMaximo.toString())
+                        editor2.putString("pago_minimo", terapeutas.terapeuta.pagoMinimo.toString())
+                        editor2.putString("rango_servicio", terapeutas.terapeuta.rangoServicio.toString())
+                        editor2.putString("foto_perfil", terapeutas.fotoPerfil)
+                        editor2.apply()
 
                         Toast.makeText(this@LogIn, "Inicio de sesion exitoso", Toast.LENGTH_SHORT).show()
-
 
                     } else {
                         Toast.makeText(this@LogIn, "Datos Incorrectos", Toast.LENGTH_SHORT).show()

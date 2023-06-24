@@ -22,9 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="@font/gotu"
         android:text="Accede a tu cuenta"
-        android:textColor="@color/teal_700"
+        android:textColor="#3AA1CF"
         android:textSize="25sp"
         android:textStyle="bold" />
 
@@ -34,20 +34,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textColorHint="@color/teal_700"
+        android:textColorHint="#3AA1CF"
         >
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_marginTop="10dp"
             android:id="@+id/user"
             android:layout_width="320dp"
-            android:layout_height="48dp"
+            android:layout_height="52dp"
             android:hint="Correo"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:drawableStart="@drawable/email"
             android:inputType="textEmailAddress"
             android:paddingLeft="4dp"
-            android:textColor="@color/teal_700"
+            android:textColor="#3AA1CF"
             android:background="@drawable/input"
             />
     </com.google.android.material.textfield.TextInputLayout>
@@ -58,19 +58,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:endIconMode="password_toggle"
-        android:textColorHint="@color/teal_700"
+        android:textColorHint="#3AA1CF"
         app:endIconTint="@color/black"
 
         >
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/pass"
             android:layout_width="320dp"
-            android:layout_height="48dp"
+            android:layout_height="52dp"
             android:inputType="textPassword"
             android:hint="Contraseña"
             android:drawableStart="@drawable/password"
-            android:textSize="15sp"
-            android:textColor="@color/teal_700"
+            android:textSize="18sp"
+            android:textColor="#3AA1CF"
             android:background="@drawable/input"
             android:paddingLeft="10dp"
 
@@ -83,10 +83,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
-        android:background="@drawable/button_rounded"
+        android:backgroundTint="#5DC3F1"
         android:fontFamily="sans-serif"
         android:text="Ingresar"
-        android:textColor="@color/teal_700"
+        android:textColor="#D8ECEB"
         android:textSize="20sp" />
 
     <com.google.android.gms.common.SignInButton

@@ -1,6 +1,7 @@
 package com.example.kbocchiv2
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
@@ -27,6 +29,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -40,17 +43,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var btnspeech: ImageButton? = null
     private var speechToText: SpeechToText? = null
 
-     var emailText: TextView? = null
-     var nombreText: TextView? = null
-     var telText: TextView? = null
-     var domiText: TextView? = null
-     var consultText: TextView? = null
-     var cedulatText: TextView? = null
-     var pagomaxText: TextView? = null
-     var pagominText: TextView? = null
-     var rangoText: TextView? = null
-    private lateinit var imgperfil: ImageView
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,18 +51,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar = findViewById(R.id.toolbar)
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.navigation_view)
-
-
-        emailText = findViewById(R.id.id_email)
-        nombreText = findViewById(R.id.id_nombre)
-        telText = findViewById(R.id.id_tel)
-        domiText = findViewById(R.id.id_domicilio)
-        consultText = findViewById(R.id.id_consultorio)
-        cedulatText = findViewById(R.id.id_cedula)
-        pagomaxText = findViewById(R.id.id_pagomax)
-        pagominText = findViewById(R.id.id_pagomin)
-        rangoText = findViewById(R.id.id_rango)
-        imgperfil = findViewById(R.id.fotoperfil)
 
         drawerLayout?.closeDrawer(GravityCompat.START)
         mAuth = FirebaseAuth.getInstance()
@@ -100,83 +80,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         speechToText = SpeechToText(this)
 
-        val storage = Firebase.storage
-        val storeImageUrl = "gs://kbocchi-1254b.appspot.com/"
-
-        val intent = intent
-        if (intent != null) {
-            val email = intent.getStringExtra("email")
-            val nombre = intent.getStringExtra("nombre")
-            val telefono = intent.getStringExtra("telefono")
-            val consultorio = intent.getStringExtra("nombre_del_consultorio")
-            val domicilio = intent.getStringExtra("domicilio")
-            val cedula = intent.getStringExtra("numero_cedula")
-            val pagomax = intent.getStringExtra("pago_maximo")
-            val pagomin = intent.getStringExtra("pago_minimo")
-            val rango = intent.getStringExtra("rango_servicio")
-            val fototerapeuta = intent.getStringExtra("foto_perfil")
-
-            val image = fototerapeuta ?: ""
-
-            val storageReference = if(!image.isNullOrEmpty()){
-                storage.reference.child(image)
-            }else{
-                null
-            }
-
-            emailText?.setText(email)
-            nombreText?.setText(nombre)
-            telText?.setText(telefono)
-            consultText?.setText(consultorio)
-            domiText?.setText(domicilio)
-            cedulatText?.setText(cedula)
-            pagomaxText?.setText(pagomax)
-            pagominText?.setText(pagomin)
-            rangoText?.setText(rango)
-
-            if(!image.isNullOrEmpty()) {
-                storageReference?.downloadUrl?.addOnSuccessListener { uri ->
-                    Picasso.get()
-                        .load(uri)
-                        .placeholder(R.drawable.placeholder_image)
-                        .into(imgperfil, object : Callback {
-                            override fun onSuccess() {
-                                // La imagen se ha cargado correctamente
-                            }
-
-                            override fun onError(e: Exception?) {
-                                Log.e("DatosPacientes", "Error al cargar la imagen", e)
-                            }
-                        })
-
-                }?.addOnFailureListener { exception ->
-                    Log.e(
-                        "DatosPacientes",
-                        "Error al obtener la URL de descarga de la imagen",
-                        exception
-                    )
-                }
-            } else {
-                imgperfil.visibility = View.GONE
-                imgperfil.setImageResource(R.drawable.placeholder_image)
-            }
-        }
-
-
 
     }
 
     private fun startSpeechToText() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.RECORD_AUDIO
-            ) !== PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !== PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf<String>(Manifest.permission.RECORD_AUDIO),
-                MainActivity.REQUEST_PERMISSION
-            )
+            ActivityCompat.requestPermissions(this, arrayOf<String>(Manifest.permission.RECORD_AUDIO), MainActivity.REQUEST_PERMISSION)
         } else {
             speechToText!!.startListening()
         }
@@ -211,6 +121,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 finish()
             }
             R.id.nav_item0 -> {
+                //Ir a la actividad principal
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -236,6 +147,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, Pacientes::class.java)
                 startActivity(intent)
             }
+            R.id.nav_perfil -> {
+                val intent = Intent(this, Perfil::class.java)
+                startActivity(intent)
+            }
         }
         drawerLayout!!.closeDrawer(GravityCompat.START)
         return true
@@ -253,3 +168,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private const val REQUEST_PERMISSION = 1
     }
 }
+

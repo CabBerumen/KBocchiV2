@@ -9,10 +9,13 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -20,128 +23,25 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar"/>
 
-        <ImageView
-            android:id="@+id/fotoperfil"
-            android:layout_marginTop="40dp"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            />
-
-        <TextView
-            android:id="@+id/id_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:fontFamily="@font/crete_round"
-            android:text="email"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:id="@+id/id_nombre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:gravity="center"
-            android:fontFamily="@font/crete_round"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:text="nombre" />
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:id="@+id/id_tel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:fontFamily="@font/crete_round"
-            android:textColor="@color/black"
-            android:text="telefono" />
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:id="@+id/id_domicilio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:fontFamily="@font/crete_round"
-            android:textColor="@color/black"
-            android:text="domicilio" />
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:id="@+id/id_consultorio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:fontFamily="@font/crete_round"
-            android:textColor="@color/black"
-            android:text="consultorio" />
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:id="@+id/id_cedula"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:fontFamily="@font/crete_round"
-            android:textColor="@color/black"
-            android:text="cedula" />
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:id="@+id/id_pagomax"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:fontFamily="@font/crete_round"
-            android:textColor="@color/black"
-            android:text="pago max" />
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:id="@+id/id_pagomin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:fontFamily="@font/crete_round"
-            android:textColor="@color/black"
-            android:text="pago min" />
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:id="@+id/id_rango"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:fontFamily="@font/crete_round"
-            android:textColor="@color/black"
-            android:text="rango" />
-
         <ImageButton
             android:id="@+id/btnSpeech"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="520dp"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:background="@drawable/voice"
+            android:backgroundTint="@color/lavender"
+            android:clickable="true"
             />
 
 
     </LinearLayout>
 
+</ScrollView>
+
+
 <com.google.android.material.navigation.NavigationView
-        android:background="#69F0AE"
+        android:background="#8CD3F3"
         android:id="@+id/navigation_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -154,6 +54,8 @@
         >
 
     </com.google.android.material.navigation.NavigationView>
+
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>
