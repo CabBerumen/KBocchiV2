@@ -1,6 +1,7 @@
 package com.example.kbocchiv2
 
 import POJO.RequestPacientes
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
 import com.example.kbocchiv2.Interfaces.ApiService
+import com.example.kbocchiv2.Request.LoginRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -93,6 +95,7 @@ class Pacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
                     pacientes = response.body()!!
                     mostrarNombresPacientes()
                     Toast.makeText(this@Pacientes, "Datos recibidos", Toast.LENGTH_SHORT).show()
+
                 } else {
                     // Manejo de errores en caso de una respuesta no exitosa de la API
                     Toast.makeText(this@Pacientes, "Datos no recibidos", Toast.LENGTH_SHORT).show()
