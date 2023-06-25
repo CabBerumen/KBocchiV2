@@ -44,7 +44,7 @@
 </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
-        android:background="#69F0AE"
+        android:background="#8CD3F3"
         android:id="@+id/navigation_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

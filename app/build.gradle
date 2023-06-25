@@ -106,6 +106,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage'
 
     implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
 
 
     implementation "androidx.drawerlayout:drawerlayout:1.2.0"

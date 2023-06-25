@@ -118,15 +118,21 @@ class mainChat : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     }
 
 
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_item3 -> {
+                val intent = Intent(this, Maps::class.java)
+                startActivity(intent)
+                finish()
+            }
             R.id.nav_item0 -> {
+                //Ir a la actividad principal
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }
             R.id.nav_logout -> {
+                //Cerrar sesión de Google
                 mAuth!!.signOut()
                 mGoogleSignInClient!!.signOut()
                 val intent = Intent(this, LogIn::class.java)
@@ -146,7 +152,10 @@ class mainChat : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 val intent = Intent(this, Pacientes::class.java)
                 startActivity(intent)
             }
-
+            R.id.nav_perfil -> {
+                val intent = Intent(this, Perfil::class.java)
+                startActivity(intent)
+            }
             R.id.nav_item2 -> {
                 val intent = Intent(this, mainChat::class.java)
                 startActivity(intent)

@@ -36,8 +36,11 @@ class SpeechToText(private val context: Context) {
                 if (voiceResults != null && voiceResults.size > 0) {
                     val recognizedText = voiceResults[0]
                     (context as MainActivity).displayResult(recognizedText)
-
-
+                    if (recognizedText.contains("Ver mapa") || recognizedText.contains("ver mapa")) {
+                        val intent = Intent(context, Maps::class.java)
+                        intent.putExtra("recognizedText", recognizedText)
+                        context.startActivity(intent)
+                    }
                 }
             }
 
