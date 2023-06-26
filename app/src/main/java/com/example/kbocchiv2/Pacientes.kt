@@ -182,6 +182,10 @@ class Pacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
                 val intent = Intent(this, mainChat::class.java)
                 startActivity(intent)
             }
+            R.id.nav_citas -> {
+                val intent = Intent(this, AgendarCita::class.java)
+                startActivity(intent)
+            }
         }
         drawerLayout!!.closeDrawer(GravityCompat.START)
         return true

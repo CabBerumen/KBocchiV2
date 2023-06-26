@@ -93,6 +93,7 @@ class Perfil : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         val rango = sharedPreferences.getString("rango_servicio", "")
         val fototerapeuta = sharedPreferences.getString("foto_perfil", "")
 
+
         val image = fototerapeuta ?: ""
 
         val storageReference = if(!image.isNullOrEmpty()){
@@ -175,6 +176,10 @@ class Perfil : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
             }
             R.id.nav_perfil -> {
                 val intent = Intent(this, Perfil::class.java)
+                startActivity(intent)
+            }
+            R.id.nav_citas -> {
+                val intent = Intent(this, AgendarCita::class.java)
                 startActivity(intent)
             }
         }

@@ -20,6 +20,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".AgendarCita"
+            android:exported="false" />
+        <activity
+            android:name=".MostrarDatosCita"
+            android:exported="false" />
+        <activity
+            android:name=".MostrarCitas"
+            android:exported="false" />
+        <activity
             android:name=".Maps"
             android:exported="false" />
         <activity
@@ -36,9 +45,6 @@
             android:exported="false" />
         <activity
             android:name=".Agenda"
-            android:exported="false" />
-        <activity
-            android:name=".Mensajes"
             android:exported="false" />
         <activity
             android:name=".Splash"

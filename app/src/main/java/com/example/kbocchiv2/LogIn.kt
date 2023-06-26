@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -52,6 +53,8 @@ class LogIn : AppCompatActivity() {
 
     public lateinit var terapeutas : LoginRequest
 
+    private lateinit var restablecerContrasena: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
@@ -59,9 +62,9 @@ class LogIn : AppCompatActivity() {
         editpass = findViewById(R.id.pass);
         botonlogin = findViewById(R.id.login)
         mSignInButtonGoogle = findViewById(R.id.btngoogle)
+        restablecerContrasena = findViewById(R.id.restablecer)
 
         terapeutas = LoginRequest()
-
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val token = sharedPreferences.getString("token", null)
@@ -109,33 +112,18 @@ class LogIn : AppCompatActivity() {
                         terapeutas = response.body()!!
 
                         val tokenInter = terapeutas.terapeuta.id
-
                         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@LogIn)
                         val editor = sharedPreferences.edit()
                         editor.putString("token", tokenInter.toString())
                         editor.apply()
-
                         val inicio = Intent(this@LogIn, MainActivity::class.java)
                         inicio.putExtra("id", tokenInter)
                         startActivity(inicio)
                         finish()
 
-                        /*
-                        inicio.putExtra("email", terapeutas.email)
-                        inicio.putExtra("nombre", terapeutas.nombre)
-                        inicio.putExtra("telefono", terapeutas.telefono)
-                        inicio.putExtra("domicilio", terapeutas.terapeuta.domicilio)
-                        inicio.putExtra("nombre_del_consultorio", terapeutas.terapeuta.nombreDelConsultorio)
-                        inicio.putExtra("numero_cedula", terapeutas.terapeuta.numeroCedula)
-                        inicio.putExtra("pago_maximo", terapeutas.terapeuta.pagoMaximo)
-                        inicio.putExtra("pago_minimo", terapeutas.terapeuta.pagoMinimo)
-                        inicio.putExtra("rango_servicio", terapeutas.terapeuta.rangoServicio)
-                        inicio.putExtra("foto_perfil", terapeutas.fotoPerfil)
-                        startActivity(inicio)
-                        */
-
                         val sharedPreferences2 = getSharedPreferences("DatosPerfil", Context.MODE_PRIVATE)
                         val editor2 = sharedPreferences2.edit()
+                        editor2.putString("id", terapeutas.id)
                         editor2.putString("email", terapeutas.email)
                         editor2.putString("nombre", terapeutas.nombre)
                         editor2.putString("telefono", terapeutas.telefono)
@@ -147,6 +135,7 @@ class LogIn : AppCompatActivity() {
                         editor2.putString("rango_servicio", terapeutas.terapeuta.rangoServicio.toString())
                         editor2.putString("foto_perfil", terapeutas.fotoPerfil)
                         editor2.apply()
+
 
                         Toast.makeText(this@LogIn, "Inicio de sesion exitoso", Toast.LENGTH_SHORT).show()
 
@@ -187,6 +176,8 @@ class LogIn : AppCompatActivity() {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)
                 account.idToken?.let { firebaseAuthWithGoogle(it) }
+
+
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
@@ -199,6 +190,8 @@ class LogIn : AppCompatActivity() {
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+
+
                     // Sign in success, update UI with the signed-in user's information
                     irHome()
                     val user = mAuth.currentUser
