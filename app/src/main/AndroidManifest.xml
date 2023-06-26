@@ -38,6 +38,9 @@
             android:name=".Agenda"
             android:exported="false" />
         <activity
+            android:name=".Mensajes"
+            android:exported="false" />
+        <activity
             android:name=".Splash"
             android:exported="true">
             <intent-filter>

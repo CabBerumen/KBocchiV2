@@ -16,7 +16,7 @@
         android:fontFamily="sans-serif-smallcaps"
         android:text="K-Bocchi"
         android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-        android:textColor="#02A8A7"
+        android:textColor="@color/toolbar"
         android:textSize="50sp"
         android:textStyle="bold" />
 

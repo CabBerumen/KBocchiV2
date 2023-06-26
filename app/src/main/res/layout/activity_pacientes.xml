@@ -28,6 +28,7 @@
          android:dividerHeight="1dp"
          android:paddingTop="8dp"
          android:paddingBottom="8dp"
+         android:layout_marginTop="20dp"
          android:background="@drawable/listview_background"
          />
 

@@ -31,9 +31,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URISyntaxException
 
 class mainChat : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener  {
-// variables para socket
-    private lateinit var socket: Socket
-    private lateinit var textViewChat: TextView
+
 //varibles para el menu(drawer)
     var mAuth: FirebaseAuth? = null
     var mGoogleSignInClient: GoogleSignInClient? = null
@@ -128,37 +126,11 @@ class mainChat : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             }
 
     private fun mostrarDatosCompletos(paciente: RequestPacientes) {
-        val intent = Intent(this@mainChat, DatosPacientes::class.java)
+        val intent = Intent(this@mainChat, Mensajes::class.java)
         intent.putExtra("nombre", paciente.nombre)
         startActivity(intent)
 
     }
-
-            private fun setupSocket() {
-                try {
-                    socket = IO.socket("https://kbocchi.onrender.com/")
-                } catch (e: URISyntaxException) {
-                    e.printStackTrace()
-                }
-            }
-
-            private fun sendMessage(message: String) {
-        socket.emit("message", message)
-
-    }
-
-    private fun displayMessage(message: String) {
-        val currentChat = textViewChat.text.toString()
-        val updatedChat = "$currentChat\n$message"
-        textViewChat.text = updatedChat
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        socket.disconnect()
-    }
-
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

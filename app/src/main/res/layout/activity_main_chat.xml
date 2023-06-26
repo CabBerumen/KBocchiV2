@@ -17,6 +17,17 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar"/>
 
+        <TextView
+
+            android:layout_gravity="center"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:text="Chats "
+            android:textSize="35sp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            />
+
 
         <ListView
             android:id="@+id/pas_mensajes"
@@ -28,6 +39,7 @@
             android:dividerHeight="1dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/listview_background"
             />
 </LinearLayout>
