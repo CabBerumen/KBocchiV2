@@ -17,30 +17,19 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar"/>
 
-    <TextView
-        android:id="@+id/textViewChat"
-        android:layout_width="320dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/white"
-        android:scrollbars="vertical" />
 
-        <EditText
-            android:id="@+id/editTextMessage"
-            android:layout_width="320dp"
-            android:layout_height="48dp"
+        <ListView
+            android:id="@+id/pas_mensajes"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:hint="Escribe tu mensaje aquí" />
-
-        <Button
-        android:id="@+id/buttonSend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-            android:layout_gravity="center"
-        android:text="Enviar" />
-
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:divider="@android:color/darker_gray"
+            tools:listitem="@android:layout/simple_list_item_1"
+            android:dividerHeight="1dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@drawable/listview_background"
+            />
 </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView

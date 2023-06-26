@@ -1,10 +1,13 @@
 package com.example.kbocchiv2
 
+import POJO.RequestPacientes
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.EditText
+import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
+import com.example.kbocchiv2.Interfaces.ApiService
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -19,49 +23,38 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import io.socket.client.IO
 import io.socket.client.Socket
-import io.socket.emitter.Emitter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URISyntaxException
 
 class mainChat : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener  {
-
+// variables para socket
     private lateinit var socket: Socket
-    private lateinit var editTextMessage: EditText
-    private lateinit var buttonSend: Button
     private lateinit var textViewChat: TextView
+//varibles para el menu(drawer)
     var mAuth: FirebaseAuth? = null
     var mGoogleSignInClient: GoogleSignInClient? = null
     var navigationView: NavigationView? = null
     var toolbar: Toolbar? = null
     var drawerLayout: DrawerLayout? = null
+//variables para obtener datos del paciente
 
+    private lateinit var listView: ListView
+    private var pacientes: List<RequestPacientes> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_chat)
-
-        setupSocket()
-        socket.connect()
-
-        editTextMessage = findViewById(R.id.editTextMessage)
-        buttonSend = findViewById(R.id.buttonSend)
-        textViewChat = findViewById(R.id.textViewChat)
-
-        buttonSend.setOnClickListener {
-            val message = editTextMessage.text.toString().trim()
-            if (message.isNotEmpty()) {
-                sendMessage(message)
-                editTextMessage.setText("")
-            }
-        }
-
-        socket.on("message", Emitter.Listener { args ->
-            runOnUiThread {
-                val message = args[0] as String
-                displayMessage(message)
-            }
-        })
+//seccion para la lista de los chats
+        listView = findViewById<ListView>(R.id.pas_mensajes)
+        pacientes = ArrayList()
+        obtenerDatosDeAPI()
 
 
+//Seccion para el menu(drawer)
         setSupportActionBar(toolbar)
         toolbar = findViewById(R.id.toolbar)
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -87,20 +80,69 @@ class mainChat : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         drawerLayout?.addDrawerListener(toggle)
         toggle.syncState()
 
+    }
+    private fun obtenerDatosDeAPI() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://kbocchi.onrender.com") // Reemplaza con la URL base de tu API REST
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val token = sharedPreferences.getString("token", null)
+
+        val call = apiService.obtenerPacientes(token)
+
+        call.enqueue(object : Callback<List<RequestPacientes>> {
+            override fun onResponse(call: Call<List<RequestPacientes>>, response: Response<List<RequestPacientes>>) {
+                if (response.isSuccessful) {
+                    pacientes = response.body()!!
+                    mostrarNombresPacientes()
+                }
+            }
+
+            override fun onFailure(call: Call<List<RequestPacientes>>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
 
 
+            private fun mostrarNombresPacientes() {
+                val nombres = ArrayList<String>()
+                for (paciente in pacientes) {
+                    nombres.add(paciente.nombre)
+                }
+
+                for (nombre in nombres) {
+                    Log.d("NOMBRE_PACIENTE", nombre)
+                }
+
+                val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, nombres)
+                listView.adapter = adapter
+
+                listView.setOnItemClickListener { parent, view, position, id ->
+                    val paciente = pacientes[position]
+                    mostrarDatosCompletos(paciente)
+                }
+            }
+
+    private fun mostrarDatosCompletos(paciente: RequestPacientes) {
+        val intent = Intent(this@mainChat, DatosPacientes::class.java)
+        intent.putExtra("nombre", paciente.nombre)
+        startActivity(intent)
 
     }
 
-    private fun setupSocket() {
-        try {
-            socket = IO.socket("https://kbocchi.onrender.com/")
-        } catch (e: URISyntaxException) {
-            e.printStackTrace()
-        }
-    }
+            private fun setupSocket() {
+                try {
+                    socket = IO.socket("https://kbocchi.onrender.com/")
+                } catch (e: URISyntaxException) {
+                    e.printStackTrace()
+                }
+            }
 
-    private fun sendMessage(message: String) {
+            private fun sendMessage(message: String) {
         socket.emit("message", message)
 
     }
