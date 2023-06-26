@@ -136,6 +136,7 @@ class LogIn : AppCompatActivity() {
 
                         val sharedPreferences2 = getSharedPreferences("DatosPerfil", Context.MODE_PRIVATE)
                         val editor2 = sharedPreferences2.edit()
+                        editor2.putString("id", terapeutas.id)
                         editor2.putString("email", terapeutas.email)
                         editor2.putString("nombre", terapeutas.nombre)
                         editor2.putString("telefono", terapeutas.telefono)

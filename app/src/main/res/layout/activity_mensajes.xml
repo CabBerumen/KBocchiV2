@@ -23,6 +23,29 @@
             android:layout_marginTop="30dp"
             android:scrollbars="vertical" />
 
+        <TextView
+            android:id="@+id/textViewMessages"
+            android:layout_width="320dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            />
+
+        <EditText
+            android:id="@+id/editTextMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Ingrese su mensaje" />
+
+        <Button
+            android:id="@+id/buttonSend"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Enviar" />
+
 
 
     </LinearLayout>
