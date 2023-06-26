@@ -97,6 +97,7 @@ class Pacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
                     mostrarNombresPacientes()
 
                     Toast.makeText(this@Pacientes, "Datos recibidos", Toast.LENGTH_SHORT).show()
+
                 } else {
                     // Manejo de errores en caso de una respuesta no exitosa de la API
                     Toast.makeText(this@Pacientes, "Datos no recibidos", Toast.LENGTH_SHORT).show()

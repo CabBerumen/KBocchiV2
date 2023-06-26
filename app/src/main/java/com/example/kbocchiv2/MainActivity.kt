@@ -148,6 +148,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
             }
+            R.id.nav_item1 -> {
+                val intent = Intent(this, MostrarCitas::class.java)
+                startActivity(intent)
+            }
         }
         drawerLayout!!.closeDrawer(GravityCompat.START)
         return true
