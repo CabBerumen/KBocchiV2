@@ -47,6 +47,7 @@ import java.io.IOException
 import java.sql.Struct
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 class Maps : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -131,6 +132,7 @@ class Maps : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             .build()
 
         val apiService = retrofit.create(ApiService::class.java)
+
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val token = sharedPreferences.getString("token", null)
 
@@ -164,7 +166,7 @@ class Maps : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
     // ResultCita es la clase principal para el arreglo para obtener los datos de la cita
     //RequestCita obtiene los datos que hay dentro del arreglo
     private fun mostrarNombresPacientes() {
-        val nombres = ArrayList<String>()
+        val nombres = HashSet<String>()
         nombres.add("")
         nombres.add("Selecciona un paciente")
         for (paciente in pacientes) {
@@ -401,6 +403,10 @@ class Maps : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             }
             R.id.nav_item1 -> {
                 val intent = Intent(this, MostrarCitas::class.java)
+                startActivity(intent)
+            }
+            R.id.nav_citas -> {
+                val intent = Intent(this, AgendarCita::class.java)
                 startActivity(intent)
             }
         }

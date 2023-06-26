@@ -78,11 +78,23 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:id="@+id/restablecer"
+        android:layout_marginLeft="80dp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/white"
+        android:fontFamily="sans-serif"
+        android:text="¿olvidaste tu contraseña?"
+        android:textColor="#4D5893"
+        android:textSize="10sp" />
+
+    <Button
         android:id="@+id/login"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         android:backgroundTint="#5DC3F1"
         android:fontFamily="sans-serif"
         android:text="Ingresar"
@@ -96,8 +108,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         />
-
-
-
 
 </LinearLayout>

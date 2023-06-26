@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -40,6 +41,8 @@ import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.squareup.picasso.Picasso
+import okhttp3.Request
+import okio.IOException
 
 class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var recyclerView: RecyclerView
@@ -150,6 +153,12 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val paciente = pacient[position]
             holder.bind(paciente)
             holder.itemView.setOnClickListener {
+                val intent = Intent(this@MostrarCitas, MostrarDatosCita::class.java)
+                intent.putExtra("nombre", paciente.nombre)
+                intent.putExtra("fecha", paciente.fecha)
+                intent.putExtra("domicilio", paciente.domicilio)
+                intent.putExtra("modalidad", paciente.modalidad)
+                startActivity(intent)
 
             }
 
@@ -173,10 +182,10 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private val fechaText: TextView = itemView.findViewById(R.id.FechaCita)
         private val nombreText: TextView = itemView.findViewById(R.id.nombrePaciente)
         private val fotoRv : CircleImageView = itemView.findViewById(R.id.fotorecycler)
+        private val btneliminar : Button = itemView.findViewById(R.id.eliminarCita)
 
         val storage = Firebase.storage
         val storeImageUrl = "gs://kbocchi-1254b.appspot.com/"
-
 
         fun bind(paciente: RequestCitas) {
 
@@ -267,12 +276,14 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, MostrarCitas::class.java)
                 startActivity(intent)
             }
+            R.id.nav_citas -> {
+                val intent = Intent(this, AgendarCita::class.java)
+                startActivity(intent)
+            }
         }
         drawerLayout!!.closeDrawer(GravityCompat.START)
         return true
     }
-
-
 
 }
 
