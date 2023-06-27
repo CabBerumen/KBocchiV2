@@ -128,6 +128,7 @@ class mainChat : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private fun mostrarDatosCompletos(paciente: RequestPacientes) {
         val intent = Intent(this@mainChat, Mensajes::class.java)
         intent.putExtra("nombre", paciente.nombre)
+        intent.putExtra("id_usuario", paciente.idUsuario)
         startActivity(intent)
 
     }

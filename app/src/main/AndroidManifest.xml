@@ -44,6 +44,9 @@
             android:name=".Perfil"
             android:exported="false" />
         <activity
+            android:name=".Mensajes"
+            android:exported="false" />
+        <activity
             android:name=".mainChat"
             android:exported="false" />
         <activity
