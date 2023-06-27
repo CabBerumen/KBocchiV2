@@ -5,8 +5,10 @@ import com.example.kbocchiv2.Request.LoginRequest;
 import java.util.List;
 
 import POJO.RequestCitas;
+import POJO.RequestExpediente;
 import POJO.RequestPacientes;
 import POJO.ResultCita;
+import POJO.ResultExpediente;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -25,5 +27,9 @@ public interface ApiService {
 
     @GET("citas/obtenerCitas/{id_terapeuta}")
     Call<ResultCita> obtenerCitas(@Path("id_terapeuta") String idTerapeuta);
+
+    @GET("/usuarios/fisioterapeutas/bitacora/pacientes/{id_terapeuta}")
+    Call<List<RequestExpediente>> obtenerExpediente (@Path("id_terapeuta") String idTerapeuta);
+
 
 }

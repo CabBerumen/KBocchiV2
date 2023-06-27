@@ -26,6 +26,9 @@
             android:name=".MostrarDatosCita"
             android:exported="false" />
         <activity
+            android:name=".Expediente"
+            android:exported="false" />
+        <activity
             android:name=".MostrarCitas"
             android:exported="false" />
         <activity
