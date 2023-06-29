@@ -1,175 +1,213 @@
 package com.example.kbocchiv2
+
+import POJO.RequestPacientes
+import POJO.Terapeuta
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.kbocchiv2.Request.LoginRequest
+import com.example.kbocchiv2.databinding.ActivityMensajesBinding
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
-import org.json.JSONArray
 import org.json.JSONObject
+import java.net.URISyntaxException
+
 
 class Mensajes : AppCompatActivity() {
 
-    var nombree : TextView? = null
     private lateinit var socket: Socket
-    private lateinit var editTextMessage: EditText
-    private lateinit var textViewMessages: TextView
+    private val messagesList: ArrayList<String> = ArrayList()
+    private lateinit var adapter: MessageAdapter
+    private lateinit var dButton: Button
+    private lateinit var inputTexto: EditText
+   // var messagesRecycler: RecyclerView? = null
+    private lateinit var messagesRecycler:RecyclerView
+
+     private lateinit var binding: ActivityMensajesBinding
+     private lateinit var conexion: TextView
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mensajes)
-        nombree = findViewById(R.id.nameChat)
-//muestra el nombre del paciente
-        val intent = intent
+        binding = ActivityMensajesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        dButton = binding.sendButton
+        messagesRecycler = binding.messagesRecyclerView
+        messagesRecycler.layoutManager = LinearLayoutManager(this)
+        inputTexto =binding.inputText
+        conexion = binding.conexion
+
+        //inputTexto = findViewById(R.id.inputText)
+        //dButton = findViewById(R.id.sendButton)
+       // messagesRecycler = findViewById(R.id.messagesRecyclerView)
+
+        //muestra informacion del paciente
+        // Muestra el nombre del paciente
+        val intent = intent
         if (intent != null) {
             val nombre = intent.getStringExtra("nombre")
-
-            nombree?.setText(nombre)
-            Log.d("DatosPacientes", "Nombre: $nombre")
-        }
-//codigo para la conexion con el socket
-
-
-        //seccion del boton
-        editTextMessage = findViewById(R.id.editTextMessage)
-        val buttonSend = findViewById<Button>(R.id.buttonSend)
-
-        buttonSend.setOnClickListener {
-            val message = editTextMessage.text.toString()
-            if (message.isNotEmpty()) {
-                val jsonObject = JSONObject()
-                val id_usuario = intent.getStringExtra("id_usuario")
-                jsonObject.put("to",id_usuario ) // Reemplaza "destinatario" con el ID del destinatario del mensaje
-                jsonObject.put("contenido", message)
-                socket.emit("mensajes:enviar", jsonObject)
-
-                editTextMessage.text.clear()
-            }
+            conexion?.text = nombre
+            Log.d("DatosPacientes", "Chat de: $nombre")
         }
 
-        val options = IO.Options()
-        options.forceNew = true
-        options.reconnection = true
+        // Inicializar el adaptador y asignarlo al RecyclerView
+         adapter = MessageAdapter(messagesList)
+        messagesRecycler.adapter = adapter
 
         try {
-            socket = IO.socket("https://kbocchi.onrender.com/")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return
+            // Configurar la conexión del socket
+            val options = IO.Options()
+            options.forceNew = true
+            socket = IO.socket("https://kbocchi.onrender.com/", options)
+        } catch (e: URISyntaxException) {
+            Log.e("SocketIO", "Error: $e")
         }
 
-        socket.on(Socket.EVENT_CONNECT, onConnect)
-        socket.on(Socket.EVENT_DISCONNECT, onDisconnect)
-        socket.on("connected", onConnected)
-        socket.on("usuario:conectado", onUsuarioConectado)
-        socket.on("usuario:desconectado", onUsuarioDesconectado)
-        socket.on("usuario:lista", onUsuarioLista)
-        socket.on("mensajes:recibido", onMensajeRecibido)
-
-
-//recibir mensajes
-        socket.on(Socket.EVENT_CONNECT) {
-            runOnUiThread {
-                // Conexión exitosa
-            }
-        }.on(Socket.EVENT_DISCONNECT) {
-            runOnUiThread {
-                // Desconexión
-            }
-        }.on("mensajes:recibido", onMensajeRecibido)
-
+        // Conectar al servidor de Socket.IO
         socket.connect()
 
-    }
+        // Manejar eventos de conexión y desconexión
+        socket.on(Socket.EVENT_CONNECT, onConnect)
+        socket.on(Socket.EVENT_DISCONNECT, onDisconnect)
 
-    private val onMensajeRecibido = Emitter.Listener { args ->
-        val mensaje = args[0] as JSONObject
-        val nombre = mensaje.getString("nombre")
-        val contenido = mensaje.getString("contenido")
-        val fecha = mensaje.getString("fecha")
+        // Manejar evento de recibir mensaje
+        socket.on("mensajes:recibido", onNewMessage)
 
-        runOnUiThread {
-            val formattedMessage = "$nombre ($fecha): $contenido\n"
-            textViewMessages.append(formattedMessage)
+        // Enviar mensaje cuando se presiona el botón
+
+        dButton.setOnClickListener {
+
+            val message = inputTexto.text.toString().trim()
+
+            if (message.isNotEmpty()) {
+                sendMessage(message)
+                inputTexto.text.clear()
+            }
         }
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        socket.disconnect()
 
-        socket.off(Socket.EVENT_CONNECT, onConnect)
-        socket.off(Socket.EVENT_DISCONNECT, onDisconnect)
-        socket.off("connected", onConnected)
-        socket.off("usuario:conectado", onUsuarioConectado)
-        socket.off("usuario:desconectado", onUsuarioDesconectado)
-        socket.off("usuario:lista", onUsuarioLista)
-        socket.off("mensajes:recibido", onMensajeRecibido)
+        //creacion del sharePreference para la id del terapeuta
+
+
+
     }
 
     private val onConnect = Emitter.Listener {
-        // La conexión con el servidor se estableció correctamente
-        // Puedes enviar tus datos aquí, por ejemplo:
+
         val datos = JSONObject()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val token = sharedPreferences.getString("token", null)
+        val token = sharedPreferences.getString("idusuario", null)
         val sharedPreferences2 = getSharedPreferences("DatosPerfil", Context.MODE_PRIVATE)
         val nombre = sharedPreferences2.getString("nombre", "")
-        val id_usuario = sharedPreferences.getString("id", "")
-        datos.put("id", id_usuario )
+        val idusuario = sharedPreferences.getString("id_usuario","")
+
+        datos.put("id_usuario", token)
         datos.put("nombre", nombre)
+
         socket.emit("send_data", datos)
+        Log.e("id paciente ", "ID DEL TERAPEUTA: $token", )
+        Log.e("id paciente ", "NOMBRE TERAPEUTA: $nombre", )
+
+        runOnUiThread {
+
+            Log.d("SocketIO", "Conectado al servidor")
+        }
     }
+
     private val onDisconnect = Emitter.Listener {
-        // El socket se desconectó del servidor
-    }
 
-    private val onConnected = Emitter.Listener { args ->
-        // El servidor confirmó la conexión del usuario
-        val message = args[0] as String
         runOnUiThread {
-            // Realiza las acciones necesarias después de la conexión exitosa
-        }
-    }
-    private val onUsuarioConectado = Emitter.Listener { args ->
-        // Un usuario se conectó al servidor
-        val usuario = args[0] as JSONObject
-        runOnUiThread {
-            // Realiza las acciones necesarias cuando un usuario se conecta
+            Log.d("SocketIO", "Desconectado del servidor")
+
         }
     }
 
-    private val onUsuarioDesconectado = Emitter.Listener { args ->
-        // Un usuario se desconectó del servidor
-        val usuario = args[0] as JSONObject
+    private val onNewMessage = Emitter.Listener { args ->
         runOnUiThread {
-            // Realiza las acciones necesarias cuando un usuario se desconecta
+            val data = args[0] as JSONObject
+            val senderName = data.getString("nombre")
+            val messageContent = data.getString("contenido")
+            val formattedMessage = "$senderName: $messageContent"
+            addMessage(formattedMessage)
         }
     }
 
-    private val onUsuarioLista = Emitter.Listener { args ->
-        // Se recibió la lista de usuarios conectados
-        val usuarios = args[0] as JSONArray
-        runOnUiThread {
-            // Actualiza la lista de usuarios conectados en tu interfaz
+    private fun sendMessage(message: String, ) {
+
+        val data = JSONObject().apply {
+
+            val intent = intent
+            if (intent != null) {
+                val idPacienteUsuario = intent.getStringExtra("id_usuario")
+
+                put("to", idPacienteUsuario) //  ID del destinatario
+                put("contenido", message)
+                Log.e("id paciente ", "ID PACIENTE: $idPacienteUsuario", )
+            }
         }
+        socket.emit("mensajes:enviar", data)
+        addMessage("Yo: $message")
     }
 
-   /* override fun onDestroy() {
+
+
+   // @SuppressLint("NotifyDataSetChanged")
+    private fun addMessage(message: String) {
+        messagesList.add(message)
+        adapter.notifyDataSetChanged()
+        messagesRecycler.scrollToPosition(messagesList.size - 1)
+    }
+
+    override fun onDestroy() {
         super.onDestroy()
         socket.disconnect()
         socket.off(Socket.EVENT_CONNECT, onConnect)
         socket.off(Socket.EVENT_DISCONNECT, onDisconnect)
-        socket.off("connected", onConnected)
-        socket.off("usuario:conectado", onUsuarioConectado)
-        socket.off("usuario:desconectado", onUsuarioDesconectado)
-        socket.off("usuario:lista", onUsuarioLista)
-        socket.off("mensajes:recibido", onMensajeRecibido)
-    }*/
+        socket.off("mensajes:recibido", onNewMessage)
+    }
+
+
+
+    //RecyclerView
+
+
+
+    class MessageAdapter(private val messages: ArrayList<String>) : RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
+
+        inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+            val messageText: TextView = itemView.findViewById(R.id.nombreMensaje)
+
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
+            val itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.mensajes_holder, parent, false)
+            return MessageViewHolder(itemView)
+        }
+
+        override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
+            val message = messages[position]
+            holder.messageText.text = message
+        }
+
+        override fun getItemCount(): Int {
+            return messages.size
+        }
+
+    }
 
 }

@@ -115,6 +115,7 @@ class LogIn : AppCompatActivity() {
                         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@LogIn)
                         val editor = sharedPreferences.edit()
                         editor.putString("token", tokenInter.toString())
+
                         editor.apply()
                         val inicio = Intent(this@LogIn, MainActivity::class.java)
                         inicio.putExtra("id", tokenInter)
@@ -124,6 +125,7 @@ class LogIn : AppCompatActivity() {
                         val sharedPreferences2 = getSharedPreferences("DatosPerfil", Context.MODE_PRIVATE)
                         val editor2 = sharedPreferences2.edit()
                         editor2.putString("id", terapeutas.id)
+                        editor2.putString("id_usuario", terapeutas.terapeuta.idUsuario)
                         editor2.putString("email", terapeutas.email)
                         editor2.putString("nombre", terapeutas.nombre)
                         editor2.putString("telefono", terapeutas.telefono)
@@ -135,6 +137,13 @@ class LogIn : AppCompatActivity() {
                         editor2.putString("rango_servicio", terapeutas.terapeuta.rangoServicio.toString())
                         editor2.putString("foto_perfil", terapeutas.fotoPerfil)
                         editor2.apply()
+
+                        val id_Usuario = terapeutas.terapeuta.idUsuario
+                        val sharedPreferences4 = PreferenceManager.getDefaultSharedPreferences(this@LogIn)
+                        val editor4 = sharedPreferences4.edit()
+                        editor4.putString("idusuario", id_Usuario.toString())
+                        editor4.apply()
+                        Log.e("id paciente ", "ID DEL TERAPEUTA: $id_Usuario", )
 
 
                         Toast.makeText(this@LogIn, "Inicio de sesion exitoso", Toast.LENGTH_SHORT).show()
