@@ -59,4 +59,5 @@ public class BitacoraCitas {
     public void setTerapeutaDatos(TerapeutaDatos terapeutaDatos) {
         this.terapeutaDatos = terapeutaDatos;
     }
+
 }

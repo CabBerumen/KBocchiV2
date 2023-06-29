@@ -166,7 +166,7 @@ class Maps : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
     // ResultCita es la clase principal para el arreglo para obtener los datos de la cita
     //RequestCita obtiene los datos que hay dentro del arreglo
     private fun mostrarNombresPacientes() {
-        val nombres = HashSet<String>()
+        val nombres = ArrayList<String>()
         nombres.add("")
         nombres.add("Selecciona un paciente")
         for (paciente in pacientes) {
@@ -359,6 +359,11 @@ class Maps : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_item4 -> {
+                val intent = Intent(this, Expediente::class.java)
+                startActivity(intent)
+                finish()
+            }
             R.id.nav_item3 -> {
                 val intent = Intent(this, Maps::class.java)
                 startActivity(intent)
