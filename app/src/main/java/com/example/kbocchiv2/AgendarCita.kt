@@ -1,13 +1,10 @@
 package com.example.kbocchiv2
 
-import POJO.RequestCitas
 import POJO.RequestPacientes
-import POJO.ResultCita
-import androidx.appcompat.app.AppCompatActivity
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -15,39 +12,43 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.example.kbocchiv2.Interfaces.ApiService
-import com.google.gson.Gson
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okio.IOException
 import org.json.JSONObject
-import org.w3c.dom.Text
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Calendar
 
 
 class AgendarCita : AppCompatActivity() {
     private lateinit var buttonCita : Button
     private val client = OkHttpClient()
-    private lateinit var agendarFecha : EditText
+    private lateinit var agendarFecha : TextView
     private lateinit var agendarDomicilio : EditText
     private lateinit var agendarID : TextView
-    private lateinit var agendarModalidad : EditText
+    private lateinit var agendarModalidad : TextView
+    private lateinit var FechaButton : Button
+    private lateinit var HoraButton : Button
+    private lateinit var AgendarPaciente : TextView
+
 
 
     private lateinit var spinnerSelect : Spinner
+    private lateinit var spinnerSelect2 : Spinner
     private var pacientes: List<RequestPacientes> = ArrayList()
     private lateinit var adapter: ArrayAdapter<String>
 
-
+    private var selectedDate: String = ""
+    private var selectedTime: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +60,10 @@ class AgendarCita : AppCompatActivity() {
         spinnerSelect = findViewById(R.id.selectspin)
         agendarID = findViewById(R.id.IDAgendar)
         agendarModalidad = findViewById(R.id.modalidadAgendar)
+        FechaButton = findViewById(R.id.fechapicker)
+        HoraButton = findViewById(R.id.horapicker)
+        AgendarPaciente = findViewById(R.id.pacienteagendar)
+        spinnerSelect2 = findViewById(R.id.selectspin2)
 
 
         //Spinner
@@ -68,12 +73,75 @@ class AgendarCita : AppCompatActivity() {
         //llamar a la función donde se obtienen los datos
         obtenerDatosDeAPI()
 
+        FechaButton.setOnClickListener {
+            showDatePicker()
+        }
+
+        HoraButton.setOnClickListener {
+            showTimePicker()
+        }
+        val adaptador2 = ArrayAdapter.createFromResource(this, R.array.modalidad, android.R.layout.simple_spinner_item
+        )
+        spinnerSelect2.setAdapter(adaptador2)
+
+        spinnerSelect2.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(part2: AdapterView<*>, view: View, post2: Int, id2: Long) {
+                agendarModalidad.setText(part2.getItemAtPosition(post2).toString())
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        })
+
 
         buttonCita.setOnClickListener {
             crearCita()
         }
 
     }
+
+    private fun showDatePicker() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this, DatePickerDialog.OnDateSetListener { view, selectedYear, selectedMonth, selectedDay ->
+                selectedDate = "$selectedYear-${selectedMonth + 1}-$selectedDay"
+                updateResultTextView()
+            },
+            year,
+            month,
+            day
+        )
+
+        datePickerDialog.show()
+    }
+
+    private fun showTimePicker() {
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val timePickerDialog = TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { view, selectedHour, selectedMinute ->
+               selectedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+               updateResultTextView()
+
+            },
+            hour,
+            minute,
+            true
+        )
+
+        timePickerDialog.show()
+    }
+
+    private fun updateResultTextView() {
+        agendarFecha.text = "$selectedDate $selectedTime"
+    }
+
+
+
 
     private fun crearCita() {
         val citaData = JSONObject()
@@ -166,6 +234,7 @@ class AgendarCita : AppCompatActivity() {
                 if(paciente != null) {
                     val pacientid = paciente.id
                     agendarID.text = pacientid.toString()
+                    AgendarPaciente.text = paciente.nombre
                 }
 
             }

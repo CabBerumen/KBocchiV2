@@ -120,7 +120,6 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     editor.putString("CitaPacientes", pacientesJson)
                     editor.apply()
 
-
                     pacient = resultCita?.getCitas() ?: emptyList()
                     adapter.actualizarLista(pacient)
 
@@ -141,7 +140,7 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-    inner class PacienteAdapter(private var pacientes: List<RequestCitas>) :
+    inner class PacienteAdapter(private var pacientessss: List<RequestCitas>) :
     RecyclerView.Adapter<PacienteViewHolder>(){
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PacienteViewHolder {
@@ -159,9 +158,7 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 intent.putExtra("domicilio", paciente.domicilio)
                 intent.putExtra("modalidad", paciente.modalidad)
                 startActivity(intent)
-
             }
-
         }
 
         override fun getItemCount(): Int {
@@ -230,6 +227,11 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_item4 -> {
+                val intent = Intent(this, Expediente::class.java)
+                startActivity(intent)
+                finish()
+            }
             R.id.nav_item3 -> {
                 val intent = Intent(this, Maps::class.java)
                 startActivity(intent)

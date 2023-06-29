@@ -31,9 +31,7 @@ class MostrarDatosCita : AppCompatActivity() {
             modalidadpacient?.setText(modalidadcita)
             domiciliopacient?.setText(domiciliocita)
 
-
         }
-
 
     }
 }

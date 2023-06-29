@@ -33,11 +33,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 class Expediente : AppCompatActivity() {
 
     var apellidos : TextView? = null
-    var nombre: TextView? = null
+   // var nombre: TextView? = null
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PacienteAdapter
     private var pacients: List<RequestExpediente> = ArrayList()
+
+    private var pacienteActual: RequestExpediente? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,6 +107,12 @@ class Expediente : AppCompatActivity() {
             val paciente = pacients[position]
             holder.bind(paciente)
             holder.itemView.setOnClickListener {
+                val gson = Gson()
+                val pacienteJson = gson.toJson(paciente)
+
+                val intent = Intent(this@Expediente, ListaNotas::class.java)
+                intent.putExtra("paciente", pacienteJson)
+                holder.itemView.context.startActivity(intent)
 
             }
 
@@ -122,6 +130,8 @@ class Expediente : AppCompatActivity() {
 
     inner class PacienteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+
+
         var firebaseStorage: FirebaseStorage? = null
 
         private val cardViewEx: CardView = itemView.findViewById(R.id.cardExpediente)
@@ -134,6 +144,8 @@ class Expediente : AppCompatActivity() {
         val storeImageUrl = "gs://kbocchi-1254b.appspot.com/"
 
         fun bind(paciente: RequestExpediente) {
+
+            pacienteActual = paciente
 
             nombreExp.text = paciente.nombre
             //ultimatext.text = paciente.fecha

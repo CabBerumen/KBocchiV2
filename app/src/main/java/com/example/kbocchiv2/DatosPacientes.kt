@@ -138,6 +138,11 @@ class DatosPacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_item4 -> {
+                val intent = Intent(this, Expediente::class.java)
+                startActivity(intent)
+                finish()
+            }
             R.id.nav_item3 -> {
                 val intent = Intent(this, Maps::class.java)
                 startActivity(intent)
@@ -172,6 +177,16 @@ class DatosPacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             }
             R.id.nav_perfil -> {
                 val intent = Intent(this, Perfil::class.java)
+                startActivity(intent)
+            }
+            R.id.nav_item2 -> {
+                val intent = Intent(this, mainChat::class.java)
+                startActivity(intent)
+
+
+            }
+            R.id.nav_item1 -> {
+                val intent = Intent(this, MostrarCitas::class.java)
                 startActivity(intent)
             }
             R.id.nav_citas -> {

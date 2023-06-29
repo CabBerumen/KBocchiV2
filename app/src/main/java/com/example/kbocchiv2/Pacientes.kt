@@ -55,6 +55,8 @@ class Pacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.navigation_view)
 
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
 
         listView = findViewById<ListView>(R.id.listapacientes)
         pacientes = ArrayList()
@@ -92,9 +94,10 @@ class Pacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
         call.enqueue(object : Callback<List<RequestPacientes>> {
             override fun onResponse(call: Call<List<RequestPacientes>>, response: Response<List<RequestPacientes>>) {
                 if (response.isSuccessful) {
-                    pacientes = response.body()!!
 
+                    pacientes = response.body()!!
                     mostrarNombresPacientes()
+
 
                     Toast.makeText(this@Pacientes, "Datos recibidos", Toast.LENGTH_SHORT).show()
 
@@ -139,9 +142,13 @@ class Pacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
 
 
     }
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_item4 -> {
+                val intent = Intent(this, Expediente::class.java)
+                startActivity(intent)
+                finish()
+            }
             R.id.nav_item3 -> {
                 val intent = Intent(this, Maps::class.java)
                 startActivity(intent)
@@ -180,6 +187,12 @@ class Pacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
             }
             R.id.nav_item2 -> {
                 val intent = Intent(this, mainChat::class.java)
+                startActivity(intent)
+
+
+            }
+            R.id.nav_item1 -> {
+                val intent = Intent(this, MostrarCitas::class.java)
                 startActivity(intent)
             }
             R.id.nav_citas -> {

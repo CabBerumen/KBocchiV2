@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class NotasBitacora {
+
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -114,4 +115,11 @@ public class NotasBitacora {
     public void setCita(BitacoraCitas cita) {
         this.cita = cita;
     }
+
+    @Override
+    public String toString() {
+        // replace with your actual properties
+        return "NotasBitacora(title=" + titulo + ", date=" + fechaCreacion + ")";
+    }
+
 }

@@ -26,7 +26,7 @@
             android:layout_gravity="center"
             />
 
-        <EditText
+        <TextView
             android:layout_marginTop="80dp"
             android:id="@+id/fechaAgendar"
             android:layout_width="wrap_content"
@@ -39,26 +39,77 @@
 
             />
 
+        <Button
+            android:id="@+id/fechapicker"
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Seleccionar la fecha"
+            />
+
+        <Button
+            android:id="@+id/horapicker"
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Seleccionar la hora"
+            />
+
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Selecciona paciente: "
+                android:textSize="20sp"
+                android:textColor="@color/black"
+
+                />
+
+
         <Spinner
             android:id="@+id/selectspin"
-            android:layout_marginTop="30dp"
             android:layout_width="120dp"
             android:layout_height="30dp"
             android:backgroundTint="@color/azulo"
-            android:layout_gravity="center"
+
             />
 
-        <TextView
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginTop="20dp"
-            android:id="@+id/IDAgendar"
-            android:layout_width="50dp"
-            android:layout_height="30dp"
-            android:text="ID"
-            android:textSize="20sp"
-            android:textColor="@color/black"
             android:layout_gravity="center"
+            >
+            <TextView
+                android:id="@+id/IDAgendar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:text="ID"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                />
 
-            />
+            <TextView
+                android:id="@+id/pacienteagendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Paciente"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+
         <EditText
             android:layout_marginTop="20dp"
             android:id="@+id/domicilioAgendar"
@@ -71,12 +122,38 @@
             android:layout_gravity="center"
             />
 
-        <EditText
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
+            >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Selecciona modalidad:"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textColorHint="@color/black"
+            />
+
+            <Spinner
+                android:id="@+id/selectspin2"
+                android:layout_width="120dp"
+                android:layout_height="30dp"
+                android:backgroundTint="@color/azulo"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_marginTop="10dp"
             android:id="@+id/modalidadAgendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="modalidad: 'domicilio/consultorio'"
+            android:hint="modalidad"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textColorHint="@color/black"

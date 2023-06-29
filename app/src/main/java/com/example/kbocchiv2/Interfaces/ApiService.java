@@ -4,6 +4,8 @@ import com.example.kbocchiv2.Request.LoginRequest;
 
 import java.util.List;
 
+import POJO.NotasBitacora;
+import POJO.RequestBitacora;
 import POJO.RequestCitas;
 import POJO.RequestExpediente;
 import POJO.RequestPacientes;
@@ -15,6 +17,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     @FormUrlEncoded
@@ -31,5 +34,7 @@ public interface ApiService {
     @GET("/usuarios/fisioterapeutas/bitacora/pacientes/{id_terapeuta}")
     Call<List<RequestExpediente>> obtenerExpediente (@Path("id_terapeuta") String idTerapeuta);
 
+    @GET("notas/terapeuta/{id_terapeuta}")
+    Call<List<NotasBitacora>> obtenerListaNotas(@Path("id_terapeuta") String idTerapeuta, @Query("id_paciente") String id_Paciente );
 
 }
