@@ -1,9 +1,6 @@
 package com.example.kbocchiv2
 
-import POJO.RequestPacientes
-import POJO.Terapeuta
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kbocchiv2.Request.LoginRequest
 import com.example.kbocchiv2.databinding.ActivityMensajesBinding
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -51,9 +47,6 @@ class Mensajes : AppCompatActivity() {
         inputTexto =binding.inputText
         conexion = binding.conexion
 
-        //inputTexto = findViewById(R.id.inputText)
-        //dButton = findViewById(R.id.sendButton)
-       // messagesRecycler = findViewById(R.id.messagesRecyclerView)
 
         //muestra informacion del paciente
         // Muestra el nombre del paciente
@@ -113,13 +106,16 @@ class Mensajes : AppCompatActivity() {
         val sharedPreferences2 = getSharedPreferences("DatosPerfil", Context.MODE_PRIVATE)
         val nombre = sharedPreferences2.getString("nombre", "")
         val idusuario = sharedPreferences.getString("id_usuario","")
+        val id =sharedPreferences2.getString("id", "")
 
+        datos.put("id",id)
         datos.put("id_usuario", token)
         datos.put("nombre", nombre)
 
         socket.emit("send_data", datos)
         Log.e("id paciente ", "ID DEL TERAPEUTA: $token", )
         Log.e("id paciente ", "NOMBRE TERAPEUTA: $nombre", )
+        Log.e("id paciente ", "id : $id", )
 
         runOnUiThread {
 
@@ -147,18 +143,18 @@ class Mensajes : AppCompatActivity() {
 
     private fun sendMessage(message: String, ) {
 
-        val data = JSONObject().apply {
-
+      //  val data = JSONObject().apply {
+        val data =  JSONObject()
             val intent = intent
             if (intent != null) {
                 val idPacienteUsuario = intent.getStringExtra("id_usuario")
-
-                put("to", idPacienteUsuario) //  ID del destinatario
-                put("contenido", message)
+               data.put("to", idPacienteUsuario) //  ID del destinatario
+               data.put("contenido", message)
                 Log.e("id paciente ", "ID PACIENTE: $idPacienteUsuario", )
-            }
+                Log.e("contenido ", "mensaje: $message", )
+                socket.emit("mensajes:enviar", data)
         }
-        socket.emit("mensajes:enviar", data)
+
         addMessage("Yo: $message")
     }
 
@@ -177,6 +173,7 @@ class Mensajes : AppCompatActivity() {
         socket.off(Socket.EVENT_CONNECT, onConnect)
         socket.off(Socket.EVENT_DISCONNECT, onDisconnect)
         socket.off("mensajes:recibido", onNewMessage)
+        Log.d("destructor", "Desconectado del servidor")
     }
 
 
