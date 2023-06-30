@@ -1,5 +1,6 @@
 package com.example.kbocchiv2
 
+import java.util.ArrayList
 import POJO.NotasBitacora
 import POJO.RequestBitacora
 import POJO.RequestExpediente
@@ -18,6 +19,9 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kbocchiv2.Interfaces.ApiService
+import com.google.android.play.core.integrity.e
+import com.google.android.play.core.integrity.i
+import com.google.android.play.integrity.internal.j
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -37,9 +41,11 @@ class ListaNotas : AppCompatActivity() {
 
     private lateinit var recyclerListaNotas : RecyclerView
     private lateinit var adapter : ListaNotasAdapter
-    private var listanotas : List<NotasBitacora> = ArrayList()
+    private var listanotas : ArrayList<NotasBitacora> = ArrayList()
 
     private lateinit var paciente: RequestExpediente
+
+    private lateinit var TituloPrueba: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +61,8 @@ class ListaNotas : AppCompatActivity() {
         recyclerListaNotas.layoutManager = LinearLayoutManager(this)
         adapter = ListaNotasAdapter(listanotas)
         recyclerListaNotas.adapter = adapter
+
+
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val pacientsJson = sharedPreferences.getString("listanotes", null)
@@ -93,18 +101,25 @@ class ListaNotas : AppCompatActivity() {
 
         val call = apiService.obtenerListaNotas(token, paciente.id.toString())
 
-        call.enqueue(object : Callback<List<NotasBitacora>> {
-            override fun onResponse(call: Call<List<NotasBitacora>>, response: Response<List<NotasBitacora>>) {
+        call.enqueue(object : Callback<List<RequestBitacora>> {
+            override fun onResponse(call: Call<List<RequestBitacora>>, response: Response<List<RequestBitacora>>) {
                 if (response.isSuccessful) {
 
                     val resultListaNotas = response.body()
                     Log.d("API Response", "Response: $resultListaNotas")
 
-                    if (resultListaNotas != null) {
-                        listanotas = resultListaNotas
-                        adapter.actualizarLista(listanotas)
+                    //resultListaNotas?.forEach(e -> e.forEach(j -> listanotas.add(j)))
 
+
+                      //listanotas = resultListaNotas!!.get(0).notas
+
+                    for (i in 0 until resultListaNotas!!.size) {
+                        for (j in 0 until resultListaNotas!!.get(i).notas.size) {
+                            listanotas.add(resultListaNotas!!.get(i).notas.get(j))
+                        }
                     }
+
+                    adapter.actualizarLista(listanotas)
 
 
 
@@ -117,7 +132,7 @@ class ListaNotas : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<List<NotasBitacora>>, t: Throwable) {
+            override fun onFailure(call: Call<List<RequestBitacora>>, t: Throwable) {
                 Toast.makeText(this@ListaNotas, "Error en la llamada a la API: ${t.message}", Toast.LENGTH_SHORT).show()
                 Log.e("ListaNotas", "Error en la llamada a la API: ${t.message}", t)
             }

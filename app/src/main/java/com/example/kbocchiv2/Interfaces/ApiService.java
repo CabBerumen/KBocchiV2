@@ -35,6 +35,6 @@ public interface ApiService {
     Call<List<RequestExpediente>> obtenerExpediente (@Path("id_terapeuta") String idTerapeuta);
 
     @GET("notas/terapeuta/{id_terapeuta}")
-    Call<List<NotasBitacora>> obtenerListaNotas(@Path("id_terapeuta") String idTerapeuta, @Query("id_paciente") String id_Paciente );
+    Call<List<RequestBitacora>> obtenerListaNotas(@Path("id_terapeuta") String idTerapeuta, @Query("id_paciente") String id_Paciente );
 
 }
