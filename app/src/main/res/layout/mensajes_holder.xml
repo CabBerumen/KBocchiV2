@@ -18,25 +18,15 @@
                 android:id="@+id/nombreMensaje"
                 android:layout_width="297dp"
                 android:layout_height="70dp"
-                android:layout_marginStart="96dp"
                 android:layout_marginTop="4dp"
                 android:text="mensaje"
                 android:textColor="@color/black"
                 android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/Mensajeholder"
-                android:layout_width="70dp"
-                android:layout_height="26dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
-                android:text="nombre"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
