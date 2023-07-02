@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
     android:background="@color/white"
     tools:context=".Notas">
 
@@ -185,7 +186,7 @@
 
                 <EditText
                     android:id="@+id/evolucionNotas"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="328dp"
@@ -200,7 +201,7 @@
                     android:id="@+id/guardarButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="288dp"
+                    android:layout_marginStart="260dp"
                     android:layout_marginTop="404dp"
                     android:onClick="editarTextos"
                     android:text="Guardar"
@@ -211,7 +212,7 @@
                     android:id="@+id/editButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="180dp"
+                    android:layout_marginStart="152dp"
                     android:layout_marginTop="404dp"
                     android:onClick="editarTextos"
                     android:text="Editar"
@@ -271,6 +272,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.google.android.material.navigation.NavigationView
+        android:background="#AFE3FA"
+        android:id="@+id/navigation_view"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        >
+
+    </com.google.android.material.navigation.NavigationView>
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:id="@+id/drawer_layout"
     tools:context=".ListaNotas">
 
     <LinearLayout
@@ -12,6 +13,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         >
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"/>
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -23,9 +28,20 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-
-
-
     </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:background="#AFE3FA"
+        android:id="@+id/navigation_view"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        >
+
+    </com.google.android.material.navigation.NavigationView>
 
   </androidx.drawerlayout.widget.DrawerLayout>

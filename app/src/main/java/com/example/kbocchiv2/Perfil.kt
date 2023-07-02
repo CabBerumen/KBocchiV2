@@ -81,6 +81,8 @@ class Perfil : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         val storage = Firebase.storage
         val storeImageUrl = "gs://kbocchi-1254b.appspot.com/"
 
+
+
         val sharedPreferences = getSharedPreferences("DatosPerfil", Context.MODE_PRIVATE)
         val email = sharedPreferences.getString("email", "")
         val nombre = sharedPreferences.getString("nombre", "")
@@ -93,8 +95,18 @@ class Perfil : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         val rango = sharedPreferences.getString("rango_servicio", "")
         val fototerapeuta = sharedPreferences.getString("foto_perfil", "")
 
+        val navigationView = findViewById<NavigationView>(R.id.navigation_view)
+        val navHeaderView = navigationView.getHeaderView(0)
+        val imageView = navHeaderView.findViewById<CircleImageView>(R.id.navheaderFoto)
+        val usertext = navHeaderView.findViewById<TextView>(R.id.user_name)
+        val emailtext = navHeaderView.findViewById<TextView>(R.id.user_email)
+
+        usertext.text = nombre
+        emailtext.text = email
 
         val image = fototerapeuta ?: ""
+
+
 
         val storageReference = if(!image.isNullOrEmpty()){
             storage.reference.child(image)
@@ -111,6 +123,25 @@ class Perfil : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         pagomaxText?.setText(pagomax)
         pagominText?.setText(pagomin)
         rangoText?.setText(rango)
+
+        if(!image.isNullOrEmpty()) {
+            storageReference?.downloadUrl?.addOnSuccessListener { uri ->
+                Picasso.get()
+                    .load(uri)
+                    .fit()
+                    .centerCrop()
+                    .into(imageView, object : com.squareup.picasso.Callback {
+                        override fun onSuccess() {
+                        }
+                        override fun onError(e: Exception?) {
+                        }
+                    })
+            }?.addOnFailureListener { exception ->
+            }
+        } else {
+            imageView.visibility = View.GONE
+            imageView.setImageResource(R.drawable.perfil)
+        }
 
         if(!image.isNullOrEmpty()) {
             storageReference?.downloadUrl?.addOnSuccessListener { uri ->
@@ -139,22 +170,53 @@ class Perfil : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         }
 
     }
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_item4 -> {
-                val intent = Intent(this, Expediente::class.java)
+            R.id.nav_item0 -> {
+                //Ir a la actividad principal
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_item1 -> {
+                //Ir a la agenda
+                val intent = Intent(this, MostrarCitas::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_citas -> {
+                //Ir a agendar citas
+                val intent = Intent(this, AgendarCita::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_item2 -> {
+                //Ir al chat
+                val intent = Intent(this, mainChat::class.java)
                 startActivity(intent)
                 finish()
             }
             R.id.nav_item3 -> {
+                //Ir al maps
                 val intent = Intent(this, Maps::class.java)
                 startActivity(intent)
                 finish()
             }
-            R.id.nav_item0 -> {
-                //Ir a la actividad principal
-                val intent = Intent(this, MainActivity::class.java)
+            R.id.nav_item4 -> {
+                //Ir al expediente
+                val intent = Intent(this, Expediente::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_pacientes -> {
+                //Ir a ver pacientes
+                val intent = Intent(this, Pacientes::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_perfil -> {
+                //Ir a ver perfil
+                val intent = Intent(this, Perfil::class.java)
                 startActivity(intent)
                 finish()
             }
@@ -173,33 +235,19 @@ class Perfil : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 val intent2 = Intent(this, LogIn::class.java)
                 startActivity(intent2)
                 finish()
+            }
 
-            }
-            R.id.nav_pacientes -> {
-                val intent = Intent(this, Pacientes::class.java)
-                startActivity(intent)
-            }
-            R.id.nav_perfil -> {
-                val intent = Intent(this, Perfil::class.java)
-                startActivity(intent)
-            }
-            R.id.nav_item2 -> {
-                val intent = Intent(this, mainChat::class.java)
-                startActivity(intent)
-
-
-            }
-            R.id.nav_item1 -> {
-                val intent = Intent(this, MostrarCitas::class.java)
-                startActivity(intent)
-            }
-            R.id.nav_citas -> {
-                val intent = Intent(this, AgendarCita::class.java)
-                startActivity(intent)
-            }
         }
         drawerLayout!!.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onBackPressed() {
+        if (drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout!!.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
     }
 
 }

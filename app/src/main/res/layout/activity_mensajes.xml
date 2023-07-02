@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
     tools:context=".Mensajes">
 
 
@@ -12,6 +13,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"/>
 
         <TextView
             android:id="@+id/conexion"
@@ -52,7 +57,20 @@
             android:text="Send" />
 
 
-
     </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:background="#AFE3FA"
+        android:id="@+id/navigation_view"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        >
+
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

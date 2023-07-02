@@ -4,24 +4,35 @@ import java.util.ArrayList
 import POJO.NotasBitacora
 import POJO.RequestBitacora
 import POJO.RequestExpediente
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kbocchiv2.Interfaces.ApiService
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.navigation.NavigationView
 import com.google.android.play.core.integrity.e
 import com.google.android.play.core.integrity.i
 import com.google.android.play.integrity.internal.j
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -37,7 +48,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ListaNotas : AppCompatActivity() {
+class ListaNotas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var recyclerListaNotas : RecyclerView
     private lateinit var adapter : ListaNotasAdapter
@@ -45,12 +56,85 @@ class ListaNotas : AppCompatActivity() {
 
     private lateinit var paciente: RequestExpediente
 
-    private lateinit var TituloPrueba: TextView
+    var drawerLayout: DrawerLayout? = null
+    var navigationView: NavigationView? = null
+    var toolbar: Toolbar? = null
+    var mAuth: FirebaseAuth? = null
+    var mGoogleSignInClient: GoogleSignInClient? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_notas)
+        setSupportActionBar(toolbar)
+        toolbar = findViewById(R.id.toolbar)
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navigationView = findViewById(R.id.navigation_view)
+
+        drawerLayout?.closeDrawer(GravityCompat.START)
+        mAuth = FirebaseAuth.getInstance()
+        navigationView?.setNavigationItemSelectedListener(this)
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+        val toogle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.navigation_drawer_close,
+            R.string.navigation_drawer_close
+        )
+        drawerLayout?.addDrawerListener(toogle)
+        toogle.syncState()
+
+        val navigationView = findViewById<NavigationView>(R.id.navigation_view)
+        val navHeaderView = navigationView.getHeaderView(0)
+        val imageView = navHeaderView.findViewById<CircleImageView>(R.id.navheaderFoto)
+        val usertext = navHeaderView.findViewById<TextView>(R.id.user_name)
+        val emailtext = navHeaderView.findViewById<TextView>(R.id.user_email)
+
+        val sharedPreferences2 = getSharedPreferences("DatosPerfil", Context.MODE_PRIVATE)
+        val fototerapeuta = sharedPreferences2.getString("foto_perfil", "")
+        val email = sharedPreferences2.getString("email", "")
+        val nombre = sharedPreferences2.getString("nombre", "")
+
+        val storage = Firebase.storage
+        val storeImageUrl = "gs://kbocchi-1254b.appspot.com/"
+
+        usertext.text = nombre
+        emailtext.text = email
+        val fotoNav = fototerapeuta
+
+        val imagePath = fotoNav ?: ""
+
+        val storageReference = if(!imagePath.isNullOrEmpty()){
+            storage.reference.child(imagePath)
+        }else{
+            null
+        }
+        if(!imagePath.isNullOrEmpty()) {
+            storageReference?.downloadUrl?.addOnSuccessListener { uri ->
+                Picasso.get()
+                    .load(uri)
+                    .fit()
+                    .centerCrop()
+                    .into(imageView, object : com.squareup.picasso.Callback {
+                        override fun onSuccess() {
+                        }
+                        override fun onError(e: Exception?) {
+                        }
+                    })
+            }?.addOnFailureListener { exception ->
+            }
+        } else {
+            imageView.visibility = View.GONE
+            imageView.setImageResource(R.drawable.perfil)
+        }
+
+
         recyclerListaNotas = findViewById(R.id.listanotasRecycler)
 
         val pacienteJson = intent.getStringExtra("paciente")
@@ -111,10 +195,14 @@ class ListaNotas : AppCompatActivity() {
                     for (i in 0 until resultListaNotas!!.size) {
                         for (j in 0 until resultListaNotas!!.get(i).notas.size) {
                             listanotas.add(resultListaNotas!!.get(i).notas.get(j))
+
                         }
                     }
 
                     adapter.actualizarLista(listanotas)
+
+
+
 
 
 
@@ -147,6 +235,13 @@ class ListaNotas : AppCompatActivity() {
             holder.bind(listan)
             holder.itemView.setOnClickListener {
                 val intent = Intent(this@ListaNotas, Notas::class.java)
+
+                val id_Cita = listan.idCita
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@ListaNotas)
+                val editor = sharedPreferences.edit()
+                editor.putInt("idcitaNota", id_Cita)
+                editor.apply()
+
                 intent.putExtra("nombre", listan.cita?.terapeutaDatos?.usuario?.nombre)
                 intent.putExtra("id", listan.id.toString())
                 intent.putExtra("diagnostico", listan.diagnostico)
@@ -157,7 +252,7 @@ class ListaNotas : AppCompatActivity() {
                 intent.putExtra("fecha_edicion", listan.fechaEdicion)
                 intent.putExtra("titulo", listan.titulo)
                 intent.putExtra("foto_perfil", listan.cita?.terapeutaDatos?.usuario?.fotoPerfil)
-                intent.putExtra("id_cita", listan.idCita.toString())
+                intent.putExtra("id_cita", listan.idCita)
                 startActivity(intent)
 
             }
@@ -229,6 +324,87 @@ class ListaNotas : AppCompatActivity() {
             }
         }
     }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_item0 -> {
+                //Ir a la actividad principal
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_item1 -> {
+                //Ir a la agenda
+                val intent = Intent(this, MostrarCitas::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_citas -> {
+                //Ir a agendar citas
+                val intent = Intent(this, AgendarCita::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_item2 -> {
+                //Ir al chat
+                val intent = Intent(this, mainChat::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_item3 -> {
+                //Ir al maps
+                val intent = Intent(this, Maps::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_item4 -> {
+                //Ir al expediente
+                val intent = Intent(this, Expediente::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_pacientes -> {
+                //Ir a ver pacientes
+                val intent = Intent(this, Pacientes::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_perfil -> {
+                //Ir a ver perfil
+                val intent = Intent(this, Perfil::class.java)
+                startActivity(intent)
+                finish()
+            }
+            R.id.nav_logout -> {
+                //Cerrar sesión de Google
+                mAuth!!.signOut()
+                mGoogleSignInClient!!.signOut()
+                val intent = Intent(this, LogIn::class.java)
+                startActivity(intent)
+                finish()
+                //Cerrar Sesión
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+                val editor = sharedPreferences.edit()
+                editor.remove("token")
+                editor.apply()
+                val intent2 = Intent(this, LogIn::class.java)
+                startActivity(intent2)
+                finish()
+            }
+
+        }
+        drawerLayout!!.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    override fun onBackPressed() {
+        if (drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout!!.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
 }
 
 
