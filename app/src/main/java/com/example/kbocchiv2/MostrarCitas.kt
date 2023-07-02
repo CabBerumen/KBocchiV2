@@ -43,6 +43,8 @@ import com.google.gson.reflect.TypeToken
 import com.squareup.picasso.Picasso
 import okhttp3.Request
 import okio.IOException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var recyclerView: RecyclerView
@@ -121,6 +123,8 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     editor.apply()
 
                     pacient = resultCita?.getCitas() ?: emptyList()
+
+
                     adapter.actualizarLista(pacient)
 
                     Log.d("MostrarCitas", "Datos recibidos: $pacient")
@@ -179,14 +183,25 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private val fechaText: TextView = itemView.findViewById(R.id.FechaCita)
         private val nombreText: TextView = itemView.findViewById(R.id.nombrePaciente)
         private val fotoRv : CircleImageView = itemView.findViewById(R.id.fotorecycler)
-        private val btneliminar : Button = itemView.findViewById(R.id.eliminarCita)
+        private val horaText : TextView = itemView.findViewById(R.id.HoraCita)
 
         val storage = Firebase.storage
         val storeImageUrl = "gs://kbocchi-1254b.appspot.com/"
 
         fun bind(paciente: RequestCitas) {
 
-            fechaText.text = paciente.fecha
+            val fechaStr : String = paciente.fecha
+            val formatoFecha = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+
+            val fechaChida = formatoFecha.parse(fechaStr)
+            val formatoSalida = SimpleDateFormat("dd 'de' MMMM 'del' yyyy", Locale("es", "ES"))
+            val formatoHoraSalida = SimpleDateFormat("h:mm a", Locale("es", "ES"))
+            val fechaFormateada = formatoSalida.format(fechaChida)
+            val horaFormateada = formatoHoraSalida.format(fechaChida)
+
+
+            fechaText.text = fechaFormateada
+            horaText.text = horaFormateada
             nombreText.text = paciente.nombre
 
             val fotoview = paciente.fotoPerfil

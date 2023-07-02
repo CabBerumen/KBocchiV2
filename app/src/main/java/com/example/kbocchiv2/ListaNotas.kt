@@ -104,15 +104,10 @@ class ListaNotas : AppCompatActivity() {
         call.enqueue(object : Callback<List<RequestBitacora>> {
             override fun onResponse(call: Call<List<RequestBitacora>>, response: Response<List<RequestBitacora>>) {
                 if (response.isSuccessful) {
-
                     val resultListaNotas = response.body()
                     Log.d("API Response", "Response: $resultListaNotas")
-
                     //resultListaNotas?.forEach(e -> e.forEach(j -> listanotas.add(j)))
-
-
                       //listanotas = resultListaNotas!!.get(0).notas
-
                     for (i in 0 until resultListaNotas!!.size) {
                         for (j in 0 until resultListaNotas!!.get(i).notas.size) {
                             listanotas.add(resultListaNotas!!.get(i).notas.get(j))
@@ -232,5 +227,6 @@ class ListaNotas : AppCompatActivity() {
             }
         }
     }
-
 }
+
+
