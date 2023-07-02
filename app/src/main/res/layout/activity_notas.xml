@@ -98,21 +98,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:text="Diagnostico:"
                     android:textColor="#737171"
-                    android:textStyle="bold"
                     android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <EditText
                     android:id="@+id/diagnosticoNotas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="48dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="40dp"
+                    android:enabled="false"
                     android:text="Diagnostico completo"
                     android:textColor="@color/black"
                     android:textSize="18sp"
@@ -123,21 +124,22 @@
 
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="84dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="108dp"
                     android:text="Observaciones:"
                     android:textColor="#737171"
-                    android:textStyle="bold"
                     android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <EditText
                     android:id="@+id/observacionesNotas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="116dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="132dp"
+                    android:enabled="false"
                     android:text="observaciones tratamiento"
                     android:textColor="@color/black"
                     android:textSize="18sp"
@@ -147,21 +149,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="156dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="204dp"
                     android:text="Tratamiento:"
                     android:textColor="#737171"
-                    android:textStyle="bold"
                     android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <EditText
                     android:id="@+id/tratamientoNotas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="188dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="228dp"
+                    android:enabled="false"
                     android:text="contenido tratamiento"
                     android:textColor="@color/black"
                     android:textSize="18sp"
@@ -171,24 +174,47 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="224dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="304dp"
                     android:text="Evolución:"
                     android:textColor="#737171"
+                    android:textSize="18sp"
                     android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/evolucionNotas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="328dp"
+                    android:enabled="false"
+                    android:text="contenido evolución"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/evolucionNotas"
+                <Button
+                    android:id="@+id/guardarButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="256dp"
-                    android:text="contenido evolución"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:layout_marginStart="288dp"
+                    android:layout_marginTop="404dp"
+                    android:onClick="editarTextos"
+                    android:text="Guardar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/editButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="180dp"
+                    android:layout_marginTop="404dp"
+                    android:onClick="editarTextos"
+                    android:text="Editar"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

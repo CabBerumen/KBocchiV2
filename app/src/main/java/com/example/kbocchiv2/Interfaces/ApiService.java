@@ -37,4 +37,5 @@ public interface ApiService {
     @GET("notas/terapeuta/{id_terapeuta}")
     Call<List<RequestBitacora>> obtenerListaNotas(@Path("id_terapeuta") String idTerapeuta, @Query("id_paciente") String id_Paciente );
 
+
 }

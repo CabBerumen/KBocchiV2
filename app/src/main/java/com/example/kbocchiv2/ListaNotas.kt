@@ -148,6 +148,7 @@ class ListaNotas : AppCompatActivity() {
             holder.itemView.setOnClickListener {
                 val intent = Intent(this@ListaNotas, Notas::class.java)
                 intent.putExtra("nombre", listan.cita?.terapeutaDatos?.usuario?.nombre)
+                intent.putExtra("id", listan.id.toString())
                 intent.putExtra("diagnostico", listan.diagnostico)
                 intent.putExtra("observaciones", listan.observaciones)
                 intent.putExtra("tratamiento", listan.tratamiento)
@@ -156,6 +157,7 @@ class ListaNotas : AppCompatActivity() {
                 intent.putExtra("fecha_edicion", listan.fechaEdicion)
                 intent.putExtra("titulo", listan.titulo)
                 intent.putExtra("foto_perfil", listan.cita?.terapeutaDatos?.usuario?.fotoPerfil)
+                intent.putExtra("id_cita", listan.idCita.toString())
                 startActivity(intent)
 
             }

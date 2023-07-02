@@ -24,16 +24,7 @@
     </androidx.recyclerview.widget.RecyclerView>
 
 
-        <TextView
-            android:layout_marginTop="30dp"
-            android:layout_gravity="center"
-            android:text="Titulo"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:id="@+id/tituloprueba"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+
 
     </LinearLayout>
 
