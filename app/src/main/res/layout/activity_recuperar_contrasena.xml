@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".RecuperarContrasena">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif"
+        android:text="¡Recupera tu contraseña!"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:layout_marginLeft="30dp"
+        android:id="@+id/Editcorreo"
+        android:layout_marginTop="15dp"
+        android:layout_width="350dp"
+        android:layout_height="45dp"
+        android:background="@drawable/input"
+        android:hint="Escribe tu correo"
+        android:textSize="18sp"
+        android:paddingLeft="8dp"
+        android:fontFamily="sans-serif"
+        android:textColorHint="#333333"
+        android:textColor="@color/black"
+        />
+
+    <Button
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/btnrecuperar"
+        android:layout_width="350dp"
+        android:layout_height="44dp"
+        android:text="Enviar"
+        android:backgroundTint="#80D8FF"
+        android:enabled="false"
+        />
+
+
+</LinearLayout>

@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -63,6 +65,34 @@ class LogIn : AppCompatActivity() {
         botonlogin = findViewById(R.id.login)
         mSignInButtonGoogle = findViewById(R.id.btngoogle)
         restablecerContrasena = findViewById(R.id.restablecer)
+
+        restablecerContrasena.setOnClickListener {
+            val intent = Intent(this@LogIn, RecuperarContrasena::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+                val correo = editusuario.text.toString()
+                val contrasena = editpass.text.toString()
+
+                val correoValido = esCorreoValido(correo)
+                val contrasenaValida = cumpleRequisitos(contrasena)
+
+                botonlogin.isEnabled = correoValido && contrasenaValida
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+            }
+        }
+
+        editusuario.addTextChangedListener(textWatcher)
+        editpass.addTextChangedListener(textWatcher)
 
         terapeutas = LoginRequest()
 
@@ -160,6 +190,18 @@ class LogIn : AppCompatActivity() {
             })
         }
 
+    }
+
+    private fun esCorreoValido(correo: String): Boolean {
+
+    return correo.contains("@") && correo.contains(".com") && correo.contains("gmail")
+    }
+
+    private fun cumpleRequisitos(contrasena: String): Boolean {
+        val longitudMinima = 8
+        val letraMayuscula = contrasena.matches(Regex(".*[A-Z].*"))
+
+        return contrasena.length >= longitudMinima && letraMayuscula
     }
 
 
