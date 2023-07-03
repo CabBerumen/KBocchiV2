@@ -220,7 +220,6 @@ class Expediente : AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
         private val cardViewEx: CardView = itemView.findViewById(R.id.cardExpediente)
         private val nombreExp: TextView = itemView.findViewById(R.id.nombreEx)
-        private val ultimatext: TextView = itemView.findViewById(R.id.ultimanCita)
         private val fotoexp : CircleImageView = itemView.findViewById(R.id.fotoExpediente)
         private val telexp : TextView = itemView.findViewById(R.id.numeroExpediente)
 
@@ -230,12 +229,8 @@ class Expediente : AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         fun bind(paciente: RequestExpediente) {
 
             pacienteActual = paciente
-
             nombreExp.text = paciente.nombre
-            //ultimatext.text = paciente.fecha
             telexp.text = paciente.telefono
-
-
 
             val fotop = paciente.fotoPerfil
 

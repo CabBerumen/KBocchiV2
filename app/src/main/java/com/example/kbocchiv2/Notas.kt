@@ -38,6 +38,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import com.squareup.picasso.Callback
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class Notas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var autorText : TextView
@@ -154,6 +156,24 @@ class Notas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListen
             val titulo = intent.getStringExtra(("titulo"))
             val fotito = intent.getStringExtra(("foto_perfil"))
 
+            val fechaStr : String? = creacion
+            val formatoFecha = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+
+            val fechaChida = formatoFecha.parse(fechaStr)
+            val formatoSalida = SimpleDateFormat("dd 'de' MMMM 'del' yyyy", Locale("es", "ES"))
+            val formatoHoraSalida = SimpleDateFormat("h:mm a", Locale("es", "ES"))
+            val fechaFormateada = formatoSalida.format(fechaChida)
+            val horaFormateada = formatoHoraSalida.format(fechaChida)
+
+            val fechaStr2 : String? = edicion
+            val formatoFecha2 = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+
+            val fechaChida2 = formatoFecha2.parse(fechaStr2)
+            val formatoSalida2 = SimpleDateFormat("dd 'de' MMMM 'del' yyyy", Locale("es", "ES"))
+            val formatoHoraSalida2 = SimpleDateFormat("h:mm a", Locale("es", "ES"))
+            val fechaFormateada2 = formatoSalida2.format(fechaChida2)
+            val horaFormateada2 = formatoHoraSalida2.format(fechaChida2)
+
 
             val imagePath = fotito ?: ""
 
@@ -168,8 +188,8 @@ class Notas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListen
             observacionText.setText(observar)
             tratamientoText.setText(trata)
             evolucionText.setText(evol)
-            fechacreaText.setText(creacion)
-            fechamod.setText(edicion)
+            fechacreaText.setText(fechaFormateada)
+            fechamod.setText(fechaFormateada2)
             tituloText.setText(titulo)
 
 
