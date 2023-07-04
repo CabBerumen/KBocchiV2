@@ -6,6 +6,7 @@ import POJO.ResultCita
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
@@ -45,6 +47,7 @@ import com.squareup.picasso.Picasso
 import okhttp3.Request
 import okio.IOException
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -195,7 +198,7 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
-    inner class PacienteAdapter(private var pacientessss: List<RequestCitas>) :
+    inner class PacienteAdapter(private var pacient: List<RequestCitas>) :
     RecyclerView.Adapter<PacienteViewHolder>(){
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PacienteViewHolder {
@@ -221,7 +224,7 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         fun actualizarLista(nuevaLista: List<RequestCitas>) {
-            pacient = nuevaLista
+            pacient = nuevaLista.sortedBy { cita -> cita.fecha }
             notifyDataSetChanged()
         }
     }
@@ -250,6 +253,12 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val fechaFormateada = formatoSalida.format(fechaChida)
             val horaFormateada = formatoHoraSalida.format(fechaChida)
 
+            val fechaActual = Date()
+            if(fechaChida < fechaActual){
+                cardView.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.cita_pasada))
+            } else {
+                cardView.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.cita_futura))
+            }
 
             fechaText.text = fechaFormateada
             horaText.text = horaFormateada
