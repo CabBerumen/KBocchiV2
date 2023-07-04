@@ -22,6 +22,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kbocchiv2.Interfaces.ApiService
@@ -47,6 +48,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ListaNotas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -142,7 +145,9 @@ class ListaNotas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
         val tipoPaciente = object : TypeToken<RequestExpediente>() {}.type
          paciente = gson.fromJson<RequestExpediente>(pacienteJson, tipoPaciente)
 
-        recyclerListaNotas.layoutManager = LinearLayoutManager(this)
+        val spanCount = 2
+        val layoutManager = GridLayoutManager(this, spanCount)
+        recyclerListaNotas.layoutManager = layoutManager
         adapter = ListaNotasAdapter(listanotas)
         recyclerListaNotas.adapter = adapter
 
@@ -190,21 +195,23 @@ class ListaNotas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                 if (response.isSuccessful) {
                     val resultListaNotas = response.body()
                     Log.d("API Response", "Response: $resultListaNotas")
+
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
                     //resultListaNotas?.forEach(e -> e.forEach(j -> listanotas.add(j)))
                       //listanotas = resultListaNotas!!.get(0).notas
                     for (i in 0 until resultListaNotas!!.size) {
                         for (j in 0 until resultListaNotas!!.get(i).notas.size) {
-                            listanotas.add(resultListaNotas!!.get(i).notas.get(j))
-
+                            val nota = resultListaNotas!!.get(i).notas.get(j)
+                            val fechaCreacionString = nota.fechaCreacion
+                            val fechaCreacionDate = dateFormat.parse(fechaCreacionString)
+                            nota.fechaCreacionDate = fechaCreacionDate
+                            listanotas.add(nota)
                         }
                     }
-
+                    listanotas.sortBy { it.fechaCreacionDate }
                     adapter.actualizarLista(listanotas)
-
-
-
-
-
+                    adapter.actualizarLista(listanotas)
 
                     Toast.makeText(this@ListaNotas, "Datos recibidos", Toast.LENGTH_SHORT).show()
 
@@ -285,8 +292,17 @@ class ListaNotas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
 
         fun bind(list: NotasBitacora) {
 
+            val fechaStr : String = list.fechaCreacion
+            val formatoFecha = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+
+            val fechaChida = formatoFecha.parse(fechaStr)
+            val formatoSalida = SimpleDateFormat("dd 'de' MMMM 'del' yyyy", Locale("es", "ES"))
+            val formatoHoraSalida = SimpleDateFormat("h:mm a", Locale("es", "ES"))
+            val fechaFormateada = formatoSalida.format(fechaChida)
+            val horaFormateada = formatoHoraSalida.format(fechaChida)
+
             textNombreNota.text = list.titulo
-            textfechaNota.text = list.fechaCreacion
+            textfechaNota.text = fechaFormateada
 
             val fotodelista = list.cita?.terapeutaDatos?.usuario?.fotoPerfil
 

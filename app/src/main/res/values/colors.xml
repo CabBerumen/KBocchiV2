@@ -13,4 +13,6 @@
     <color name="azulito">#8AD1F1</color>
     <color name="azulo">#5BAED3</color>
     <color name="toolbar">#43B3E4</color>
+    <color name="cita_pasada">#64B5F6</color>
+    <color name="cita_futura">#BBDEFB</color>
 </resources>

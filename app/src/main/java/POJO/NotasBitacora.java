@@ -3,6 +3,10 @@ import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class NotasBitacora {
 
     @SerializedName("id")
@@ -35,6 +39,8 @@ public class NotasBitacora {
     @SerializedName("cita")
     @Expose
     private BitacoraCitas cita;
+
+    private Date fechaCreacionDate;
 
     public Integer getId() {
         return id;
@@ -116,10 +122,27 @@ public class NotasBitacora {
         this.cita = cita;
     }
 
+    public Date getFechaCreacionDate() {
+        return fechaCreacionDate;
+    }
+
+    public void setFechaCreacionDate(Date fechaCreacionDate) {
+        this.fechaCreacionDate = fechaCreacionDate;
+    }
+
     @Override
     public String toString() {
         // replace with your actual properties
         return "NotasBitacora(title=" + titulo + ", date=" + fechaCreacion + ")";
+    }
+
+    public void convertirFechaCreacion() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            fechaCreacionDate = dateFormat.parse(fechaCreacion);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 }

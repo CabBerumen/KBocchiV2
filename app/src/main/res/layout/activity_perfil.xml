@@ -59,9 +59,7 @@
                     android:text="nombre" />
 
 
-
-
-                <androidx.cardview.widget.CardView
+            <androidx.cardview.widget.CardView
                     android:layout_width="355dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="30dp"

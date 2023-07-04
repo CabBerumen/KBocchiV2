@@ -6,7 +6,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
@@ -27,6 +29,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import java.util.Locale
+
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -39,7 +43,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var mGoogleSignInClient: GoogleSignInClient? = null
     var btnspeech: ImageButton? = null
     private var speechToText: SpeechToText? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,13 +121,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             imageView.setImageResource(R.drawable.perfil)
         }
 
-
         btnspeech?.setOnClickListener(View.OnClickListener {
             startSpeechToText()
         })
-
         speechToText = SpeechToText(this)
-
 
     }
 
