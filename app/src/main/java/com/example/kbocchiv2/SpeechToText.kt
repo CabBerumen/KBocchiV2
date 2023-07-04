@@ -36,8 +36,27 @@ class SpeechToText(private val context: Context) {
                 if (voiceResults != null && voiceResults.size > 0) {
                     val recognizedText = voiceResults[0]
                     (context as MainActivity).displayResult(recognizedText)
+                    //Seccion del mapa
                     if (recognizedText.contains("Ver mapa") || recognizedText.contains("ver mapa")) {
                         val intent = Intent(context, Maps::class.java)
+                        intent.putExtra("recognizedText", recognizedText)
+                        context.startActivity(intent)
+                    }
+                    //seccion del Chat
+                    if (recognizedText.contains("ver conversaciones") || recognizedText.contains("ver conversacion")||recognizedText.contains("ver chats")||recognizedText.contains("ver chat") ) {
+                        val intent = Intent(context, mainChat::class.java)
+                        intent.putExtra("recognizedText", recognizedText)
+                        context.startActivity(intent)
+                    }
+                    //seccion de paciente
+                    if (recognizedText.contains("ver pacientes") || recognizedText.contains("ver perfil de paciente")) {
+                        val intent = Intent(context, Pacientes::class.java)
+                        intent.putExtra("recognizedText", recognizedText)
+                        context.startActivity(intent)
+                    }
+                    //Seccion de expedientes
+                    if (recognizedText.contains("ver expedientes") || recognizedText.contains("ver expediente")) {
+                        val intent = Intent(context, Expediente::class.java)
                         intent.putExtra("recognizedText", recognizedText)
                         context.startActivity(intent)
                     }

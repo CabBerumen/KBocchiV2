@@ -46,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@color/white"
             android:text="Seleccionar la fecha"
             />
 
@@ -55,6 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@color/white"
             android:text="Seleccionar la hora"
             />
 
@@ -168,7 +170,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Agendar"
-            android:backgroundTint="@color/azulito"
+            android:textColor="@color/white"
+
 
             />
     </LinearLayout>
