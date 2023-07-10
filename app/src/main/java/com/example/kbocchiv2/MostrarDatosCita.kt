@@ -2,12 +2,15 @@ package com.example.kbocchiv2
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -21,6 +24,13 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import okhttp3.Call
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okio.IOException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class MostrarDatosCita : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -28,12 +38,16 @@ class MostrarDatosCita : AppCompatActivity(), NavigationView.OnNavigationItemSel
     var fechapacient : TextView? = null
     var modalidadpacient : TextView? = null
     var domiciliopacient : TextView? = null
+    var horapacient: TextView? = null
+    private lateinit var btneditar : Button
+    private lateinit var btneliminar : Button
 
     var drawerLayout: DrawerLayout? = null
     var navigationView: NavigationView? = null
     var toolbar: Toolbar? = null
     var mAuth: FirebaseAuth? = null
     var mGoogleSignInClient: GoogleSignInClient? = null
+    private val client = OkHttpClient()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +64,9 @@ class MostrarDatosCita : AppCompatActivity(), NavigationView.OnNavigationItemSel
         fechapacient = findViewById(R.id.fechatext)
         modalidadpacient = findViewById(R.id.modalidadtext)
         domiciliopacient = findViewById(R.id.domiciliotext)
+        horapacient = findViewById(R.id.horatext)
+        btneditar = findViewById(R.id.editarbtn)
+        btneliminar = findViewById(R.id.eliminarbtn)
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -112,20 +129,80 @@ class MostrarDatosCita : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
         val intent = intent
-        if (intent != null) {
             val pacientecita = intent.getStringExtra("nombre")
             val fechacita = intent.getStringExtra("fecha")
             val modalidadcita = intent.getStringExtra("modalidad")
             val domiciliocita = intent.getStringExtra(("domicilio"))
+            val citaid = intent.getStringExtra("id")
+            val nombrepaciente = intent.getStringExtra("nombre")
+            val idpaciente = intent.getStringExtra("id_paciente")
+
+            val fechaStr : String = fechacita.toString()
+            val formatoFecha = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+
+            val fechaChida = formatoFecha.parse(fechaStr)
+            val formatoSalida = SimpleDateFormat("dd 'de' MMMM 'del' yyyy", Locale("es", "ES"))
+            val formatoHoraSalida = SimpleDateFormat("h:mm a", Locale("es", "ES"))
+            val fechaFormateada = formatoSalida.format(fechaChida)
+            val horaFormateada = formatoHoraSalida.format(fechaChida)
 
             nombrepacient?.setText(pacientecita)
-            fechapacient?.setText(fechacita)
+            fechapacient?.setText(fechaFormateada)
+            horapacient?.setText(horaFormateada)
             modalidadpacient?.setText(modalidadcita)
             domiciliopacient?.setText(domiciliocita)
 
+
+        btneditar.setOnClickListener {
+            val intent = Intent(this@MostrarDatosCita, ModificarCita::class.java)
+            startActivity(intent)
         }
 
+        btneliminar.setOnClickListener {
+            eliminarCita()
+            val intent = Intent(this@MostrarDatosCita, MostrarCitas::class.java)
+            startActivity(intent)
+        }
     }
+
+    private fun eliminarCita() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val token = sharedPreferences.getString("token", null)
+
+        val sharedPreferences2 = PreferenceManager.getDefaultSharedPreferences(this)
+        val citaid = sharedPreferences2.getInt("idcitaeditar", 0)
+
+        val request = Request.Builder()
+            .url("https://kbocchi.onrender.com/citas/$citaid")
+            .delete()
+            .addHeader("Authorization", "Bearer $token")
+            .build()
+
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+                runOnUiThread {
+                    Toast.makeText(this@MostrarDatosCita, "Error en la llamada de red", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseData = response.body?.string()
+                if (response.isSuccessful && responseData != null) {
+                    runOnUiThread {
+                        Toast.makeText(this@MostrarDatosCita, "Cita eliminada", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    val errorMessage = responseData
+                    runOnUiThread {
+                        Toast.makeText(this@MostrarDatosCita, "Error en la API: $errorMessage", Toast.LENGTH_SHORT).show()
+                        Log.d("ERROR MESSAGE:", "Error: $errorMessage")
+                    }
+                }
+            }
+        })
+    }
+
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

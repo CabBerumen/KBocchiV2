@@ -20,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ModificarCita"
+            android:exported="false" />
+        <activity
             android:name=".VerHorario"
             android:exported="false" />
         <activity
@@ -89,6 +92,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBB3HIJ5YYiXHdBoxx1nwbRsUc7ZyPmg4s" />
     </application>
 
 </manifest>

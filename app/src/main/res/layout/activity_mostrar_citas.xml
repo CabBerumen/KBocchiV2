@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D7EEF8"
+    android:background="@color/white"
     android:id="@+id/drawer_layout"
     tools:context=".MostrarCitas"
     >
@@ -28,6 +28,13 @@
             android:textStyle="bold"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
+            />
+
+        <CalendarView
+            android:id="@+id/calendarViewCitas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/azulo"
             />
 
     <androidx.recyclerview.widget.RecyclerView

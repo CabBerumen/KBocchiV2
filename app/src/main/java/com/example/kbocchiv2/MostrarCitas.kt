@@ -1,23 +1,21 @@
 package com.example.kbocchiv2
 
 import POJO.RequestCitas
-import POJO.RequestPacientes
 import POJO.ResultCita
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.ColorStateList
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.CalendarView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -26,13 +24,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.storage.FirebaseStorage
-import de.hdodenhof.circleimageview.CircleImageView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import com.example.kbocchiv2.Interfaces.ApiService
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -40,19 +31,26 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.squareup.picasso.Picasso
-import okhttp3.Request
-import okio.IOException
+import de.hdodenhof.circleimageview.CircleImageView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PacienteAdapter
+    private lateinit var calendarView: CalendarView
     private var pacient: List<RequestCitas> = ArrayList()
     var toolbar: Toolbar? = null
 
@@ -68,6 +66,7 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar = findViewById(R.id.toolbar)
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.navigation_view)
+        calendarView = findViewById(R.id.calendarViewCitas)
 
         drawerLayout?.closeDrawer(GravityCompat.START)
         mAuth = FirebaseAuth.getInstance()
@@ -148,6 +147,22 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         obtenerDatosDeAPI()
 
+
+        //Bloquea las fechas anteriores en el Calendarario
+        calendarView.minDate = System.currentTimeMillis()
+
+        //Al seleccionar una fecha en el calendario, muestra las citas de esa fecha
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            val selectedDate = Calendar.getInstance().apply {
+                set(year, month, dayOfMonth, 0, 0, 0)
+                set(Calendar.MILLISECOND, 0)
+            }.time
+
+            val citasFiltradas = filtrarCitasPorFecha(selectedDate)
+            adapter.actualizarLista(citasFiltradas)
+        }
+
+
     }
 
     private fun obtenerDatosDeAPI() {
@@ -179,11 +194,7 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                     pacient = resultCita?.getCitas() ?: emptyList()
 
-
-                    adapter.actualizarLista(pacient)
-
                     Log.d("MostrarCitas", "Datos recibidos: $pacient")
-                    Toast.makeText(this@MostrarCitas, "Datos recibidos", Toast.LENGTH_SHORT).show()
                 } else {
 
                     Log.e("MostrarCitas", "Error en la respuesta: ${response.code()}")
@@ -198,6 +209,19 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
+    private fun filtrarCitasPorFecha(fecha: Date): List<RequestCitas> {
+        val formatoFecha = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val formatoFechaSolo = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val fechaSeleccionada = formatoFechaSolo.format(fecha)
+
+        return pacient.filter { paciente ->
+            val fechaCita = formatoFecha.parse(paciente.fecha)
+            val fechaCitaSolo = formatoFechaSolo.format(fechaCita)
+            fechaCitaSolo == fechaSeleccionada
+        }
+    }
+
+
     inner class PacienteAdapter(private var pacient: List<RequestCitas>) :
     RecyclerView.Adapter<PacienteViewHolder>(){
 
@@ -211,10 +235,25 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             holder.bind(paciente)
             holder.itemView.setOnClickListener {
                 val intent = Intent(this@MostrarCitas, MostrarDatosCita::class.java)
+
+                val idpacient = paciente.idPaciente
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@MostrarCitas)
+                val editor = sharedPreferences.edit()
+                editor.putInt("idpacient", idpacient)
+                editor.apply()
+
+                val idcita = paciente.id
+                val sharedPreferences2 = PreferenceManager.getDefaultSharedPreferences(this@MostrarCitas)
+                val editor2 = sharedPreferences2.edit()
+                editor2.putInt("idcitaeditar", idcita)
+                editor2.apply()
+
                 intent.putExtra("nombre", paciente.nombre)
                 intent.putExtra("fecha", paciente.fecha)
                 intent.putExtra("domicilio", paciente.domicilio)
                 intent.putExtra("modalidad", paciente.modalidad)
+                intent.putExtra("id_paciente", paciente.idPaciente)
+                intent.putExtra("id", paciente.id)
                 startActivity(intent)
             }
         }
@@ -253,12 +292,24 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val fechaFormateada = formatoSalida.format(fechaChida)
             val horaFormateada = formatoHoraSalida.format(fechaChida)
 
-            val fechaActual = Date()
-            if(fechaChida < fechaActual){
+
+            val fechaActual = Calendar.getInstance().time
+            val calendarChida = Calendar.getInstance()
+            calendarChida.time = fechaChida
+            if (calendarChida.before(Calendar.getInstance())) {
+                // fechaChida es anterior a la fecha actual
+                cardView.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.cita_pasada))
+            } else if (calendarChida.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                calendarChida.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
+                calendarChida.get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar.DAY_OF_MONTH) &&
+                calendarChida.get(Calendar.HOUR_OF_DAY) < Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+                // fechaChida tiene la misma fecha que la actual, pero una hora anterior
                 cardView.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.cita_pasada))
             } else {
+                // fechaChida es futura
                 cardView.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.cita_futura))
             }
+
 
             fechaText.text = fechaFormateada
             horaText.text = horaFormateada

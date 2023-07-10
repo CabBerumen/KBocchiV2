@@ -5,8 +5,10 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.location.Address
+import android.location.Geocoder
+import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
@@ -26,6 +28,11 @@ import com.example.kbocchiv2.Interfaces.ApiService
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
@@ -44,19 +51,27 @@ import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Calendar
+import java.util.Locale
 
 
-class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback{
     private lateinit var buttonCita : Button
     private val client = OkHttpClient()
     private lateinit var agendarFecha : TextView
-    private lateinit var agendarDomicilio : EditText
-    private lateinit var agendarID : TextView
+    private lateinit var agendarDomicilio : TextView
+    private lateinit var agendarHora : TextView
     private lateinit var agendarModalidad : TextView
     private lateinit var FechaButton : Button
     private lateinit var HoraButton : Button
     private lateinit var AgendarPaciente : TextView
-
+    private lateinit var mapView: MapView
+    private lateinit var geocoder: Geocoder
+    private lateinit var btnbuscar : Button
+    private lateinit var direccion : EditText
+    private lateinit var googleMap : GoogleMap
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
+    private var idpaciente: Int = 0
 
 
     private lateinit var spinnerSelect : Spinner
@@ -80,15 +95,31 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         setSupportActionBar(toolbar)
         toolbar = findViewById(R.id.toolbar)
         agendarFecha = findViewById(R.id.fechaAgendar)
+        agendarHora = findViewById<TextView>(R.id.hourAgendar)
         agendarDomicilio = findViewById(R.id.domicilioAgendar)
         buttonCita = findViewById(R.id.btnagendar)
         spinnerSelect = findViewById(R.id.selectspin)
-        agendarID = findViewById(R.id.IDAgendar)
         agendarModalidad = findViewById(R.id.modalidadAgendar)
         FechaButton = findViewById(R.id.fechapicker)
         HoraButton = findViewById(R.id.horapicker)
         AgendarPaciente = findViewById(R.id.pacienteagendar)
         spinnerSelect2 = findViewById(R.id.selectspin2)
+        btnbuscar = findViewById(R.id.buttonSearch)
+        direccion = findViewById(R.id.editTextAddress)
+        mapView = findViewById(R.id.mapView)
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync(this)
+
+        btnbuscar.setOnClickListener {
+            val address = direccion.text.toString()
+            if (address.isNotEmpty()) {
+                GeocodingTask().execute(address)
+            }else{
+                Toast.makeText(this, "Ingresa una dirección", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
 
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.navigation_view)
@@ -193,7 +224,8 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         val datePickerDialog = DatePickerDialog(
             this, DatePickerDialog.OnDateSetListener { view, selectedYear, selectedMonth, selectedDay ->
                 selectedDate = "$selectedYear-${selectedMonth + 1}-$selectedDay"
-                updateResultTextView()
+                agendarFecha.text = selectedDate
+
             },
             year,
             month,
@@ -210,23 +242,15 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
         val timePickerDialog = TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { view, selectedHour, selectedMinute ->
                selectedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
-               updateResultTextView()
+               agendarHora.text = selectedTime
 
             },
             hour,
             minute,
             true
         )
-
         timePickerDialog.show()
     }
-
-    private fun updateResultTextView() {
-        agendarFecha.text = "$selectedDate $selectedTime"
-    }
-
-
-
 
     private fun crearCita() {
         val citaData = JSONObject()
@@ -234,10 +258,10 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         val token = sharedPreferences.getString("token", null)
 
 
-        citaData.put("fecha", agendarFecha.text.toString())
-        citaData.put("lng", -103.4574)
-        citaData.put("lat", 20.456545334)
-        citaData.put("id_paciente", agendarID.text.toString())
+        citaData.put("fecha", agendarFecha.text.toString() + " " + agendarHora.text.toString())
+        citaData.put("lng", longitude)
+        citaData.put("lat", latitude)
+        citaData.put("id_paciente", idpaciente)
         citaData.put("id_terapeuta", token)
         citaData.put("domicilio", agendarDomicilio.text.toString())
         citaData.put("modalidad", agendarModalidad.text.toString())
@@ -318,8 +342,7 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val paciente = pacientes.getOrNull(position -1)
                 if(paciente != null) {
-                    val pacientid = paciente.id
-                    agendarID.text = pacientid.toString()
+                    idpaciente= paciente.id
                     AgendarPaciente.text = paciente.nombre
                 }
 
@@ -412,5 +435,59 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
     companion object {
         private const val REQUEST_PERMISSION = 1
     }
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
+    }
+
+    override fun onMapReady(map: GoogleMap) {
+        googleMap = map
+    }
+
+    private inner class GeocodingTask : AsyncTask<String, Void, List<Address>>() {
+        override fun doInBackground(vararg addresses: String): List<Address>? {
+            val geocoder = Geocoder(this@AgendarCita, Locale.getDefault())
+            try {
+                return geocoder.getFromLocationName(addresses[0], 1)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            return null
+        }
+
+        override fun onPostExecute(results: List<Address>?) {
+            if (results != null && results.isNotEmpty()) {
+                val address = results[0]
+                val formattedAddress = address.getAddressLine(0)
+                agendarDomicilio.text = formattedAddress
+
+                latitude = address.latitude
+                longitude = address.longitude
+
+                val location = LatLng(address.latitude, address.longitude)
+
+                googleMap.addMarker(com.google.android.gms.maps.model.MarkerOptions().position(location).title(formattedAddress))
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+            } else {
+                agendarDomicilio.text = "No se encontró ninguna dirección."
+            }
+        }
+    }
 }
+
 

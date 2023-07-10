@@ -8,14 +8,21 @@
     android:id="@+id/drawer_layout"
     tools:context=".AgendarCita">
 
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         >
         <include
             android:id="@+id/toolbar"
             layout="@layout/toolbar"/>
+
 
         <TextView
             android:layout_marginTop="20dp"
@@ -24,154 +31,220 @@
             android:text="Agendar Cita"
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:layout_marginLeft="18dp"
             />
 
-        <TextView
-            android:layout_marginTop="80dp"
-            android:id="@+id/fechaAgendar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="fecha y hora"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textColorHint="@color/black"
-            android:layout_gravity="center"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="800dp">
 
-            />
 
-        <Button
-            android:id="@+id/fechapicker"
-            android:layout_marginTop="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Seleccionar la fecha"
-            />
+            <TextView
+                android:id="@+id/fechaAgendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="228dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/input"
+                android:hint="fecha"
+                android:paddingLeft="5dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/horapicker"
-            android:layout_marginTop="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Seleccionar la hora"
-            />
+            <TextView
+                android:id="@+id/hourAgendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="228dp"
+                android:layout_marginTop="64dp"
+                android:background="@drawable/input"
+                android:hint="hora"
+                android:paddingLeft="5dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_marginTop="30dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            >
+            <Button
+                android:id="@+id/fechapicker"
+                android:layout_width="193dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:text="Fecha: "
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/horapicker"
+                android:layout_width="193dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="60dp"
+                android:text="Hora: "
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="112dp"
+                android:background="@drawable/input2"
+                android:paddingLeft="5dp"
                 android:text="Selecciona paciente: "
-                android:textSize="20sp"
                 android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                />
 
-
-        <Spinner
-            android:id="@+id/selectspin"
-            android:layout_width="120dp"
-            android:layout_height="30dp"
-            android:backgroundTint="@color/azulo"
-
-            />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="center"
-            >
-            <TextView
-                android:id="@+id/IDAgendar"
-                android:layout_width="30dp"
+            <Spinner
+                android:id="@+id/selectspin"
+                android:layout_width="120dp"
                 android:layout_height="30dp"
-                android:text="ID"
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                />
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="152dp"
+                android:background="@color/azulito"
+                android:backgroundTint="@color/azulo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
             <TextView
                 android:id="@+id/pacienteagendar"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="228dp"
+                android:layout_marginTop="112dp"
+                android:background="@drawable/input"
+                android:paddingLeft="5dp"
                 android:text="Paciente"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                />
-        </LinearLayout>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:layout_marginTop="20dp"
-            android:id="@+id/domicilioAgendar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="domicilio: Calle/número/Colonia"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textColorHint="@color/black"
-            android:layout_gravity="center"
-            />
+            <EditText
+                android:id="@+id/editTextAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="284dp"
+                android:background="@drawable/input2"
+                android:hint="Ingresa la dirección"
+                android:paddingLeft="8dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            >
+            <Button
+                android:id="@+id/buttonSearch"
+                android:layout_width="297dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="348dp"
+                android:text="Buscar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Selecciona modalidad:"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textColorHint="@color/black"
-            />
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="350dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="404dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </com.google.android.gms.maps.MapView>
+
+            <TextView
+                android:id="@+id/domicilioAgendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="624dp"
+                android:background="@drawable/input"
+                android:hint="domicilio: Calle/número/Colonia"
+                android:paddingLeft="5dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="196dp"
+                android:background="@drawable/input2"
+                android:hint="Selecciona modalidad:"
+                android:paddingLeft="5dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
                 android:id="@+id/selectspin2"
                 android:layout_width="120dp"
                 android:layout_height="30dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="232dp"
+                android:background="@color/azulito"
                 android:backgroundTint="@color/azulo"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/modalidadAgendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="228dp"
+                android:layout_marginTop="196dp"
+                android:background="@drawable/input"
+                android:hint="modalidad"
+                android:paddingLeft="5dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_marginTop="10dp"
-            android:id="@+id/modalidadAgendar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="modalidad"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textColorHint="@color/black"
-            android:layout_gravity="center"
-            />
+            <Button
+                android:id="@+id/btnagendar"
+                android:layout_width="288dp"
+                android:layout_height="42dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="684dp"
+                android:backgroundTint="@color/azulito"
+                android:text="Agendar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:id="@+id/btnagendar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Agendar"
-            android:backgroundTint="@color/azulito"
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            />
+
+
+
     </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.navigation.NavigationView
         android:background="#AFE3FA"
@@ -184,8 +257,6 @@
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
         >
-
-
 
     </com.google.android.material.navigation.NavigationView>
 
