@@ -122,7 +122,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         btnspeech?.setOnClickListener(View.OnClickListener {
+
             startSpeechToText()
+
         })
         speechToText = SpeechToText(this)
 
@@ -148,10 +150,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onDestroy() {
+   /* override fun onDestroy() {
         super.onDestroy()
         speechToText!!.destroy()
-    }
+    }*/
 
     fun displayResult(result: String?) {
         Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
