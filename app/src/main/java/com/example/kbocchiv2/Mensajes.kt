@@ -1,7 +1,11 @@
 package com.example.kbocchiv2
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +18,7 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NotificationCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
@@ -184,10 +189,7 @@ class Mensajes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
         //creacion del sharePreference para la id del terapeuta
 
-
-
     }
-
     private val onConnect = Emitter.Listener {
 
         val datos = JSONObject()
@@ -229,6 +231,7 @@ class Mensajes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             val messageContent = data.getString("contenido")
             val formattedMessage = "$senderName: $messageContent"
             addMessage(formattedMessage)
+
         }
     }
 
@@ -249,8 +252,6 @@ class Mensajes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         addMessage("Yo: $message")
     }
 
-
-
    // @SuppressLint("NotifyDataSetChanged")
     private fun addMessage(message: String) {
         messagesList.add(message)
@@ -267,11 +268,7 @@ class Mensajes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         Log.d("destructor", "Desconectado del servidor")
     }
 
-
-
     //RecyclerView
-
-
     class MessageAdapter(private val messages: ArrayList<String>) : RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
 
         inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -295,6 +292,39 @@ class Mensajes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             return messages.size
         }
 
+    }
+
+    private fun mostrarNotificacion(title: String, message: String, senderName: String) {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channelId = "mi_canal_de_notificaciones"
+        val notificationId = 0 // Usa un ID único para cada notificación
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                "Nombre del canal",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val intent = Intent(this, Mensajes::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            notificationId,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+
+        notificationManager.notify(notificationId, notificationBuilder.build())
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

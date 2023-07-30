@@ -2,8 +2,10 @@ package com.example.kbocchiv2
 
 import POJO.RequestCitas
 import POJO.ResultCita
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +20,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -25,12 +28,10 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kbocchiv2.Interfaces.ApiService
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
@@ -54,8 +55,6 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var pacient: List<RequestCitas> = ArrayList()
     var toolbar: Toolbar? = null
 
-    var mAuth: FirebaseAuth? = null
-    var mGoogleSignInClient: GoogleSignInClient? = null
     var drawerLayout: DrawerLayout? = null
     var navigationView: NavigationView? = null
 
@@ -69,7 +68,6 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         calendarView = findViewById(R.id.calendarViewCitas)
 
         drawerLayout?.closeDrawer(GravityCompat.START)
-        mAuth = FirebaseAuth.getInstance()
 
         navigationView?.setNavigationItemSelectedListener(this)
 
@@ -77,7 +75,7 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
         val toogle = ActionBarDrawerToggle(
             this,
             drawerLayout,
@@ -162,6 +160,14 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             adapter.actualizarLista(citasFiltradas)
         }
 
+        FirebaseMessaging.getInstance().subscribeToTopic("citas").addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("MostrarCitas", "Successfully subscribed to the topic 'citas'")
+                } else {
+                    Log.e("MostrarCitas", "Failed to subscribe to the topic 'citas'")
+                }
+            }
+
 
     }
 
@@ -193,6 +199,20 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     editor.apply()
 
                     pacient = resultCita?.getCitas() ?: emptyList()
+
+                    if (resultCita?.getCitas()?.isNotEmpty() == true) {
+                        // Check if the VIBRATE permission is granted
+                        if (ActivityCompat.checkSelfPermission(this@MostrarCitas, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+                            // If VIBRATE permission is already granted, show the notification directly
+                            mostrarNotificacion("Nueva Cita", "Has recibido una nueva cita.")
+                        } else {
+                            // If VIBRATE permission is not granted, request it
+                            val requestCode = 123 // Use any unique request code here
+                            ActivityCompat.requestPermissions(this@MostrarCitas, arrayOf(Manifest.permission.VIBRATE), requestCode)
+                        }
+                    }
+
+
 
                     Log.d("MostrarCitas", "Datos recibidos: $pacient")
                 } else {
@@ -350,6 +370,35 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
     }
+
+    private fun mostrarNotificacion(title: String, body: String) {
+        // The mostrarNotificacion function from the MyFirebaseMessagingService
+        // Ensure the code for mostrarNotificacion function from MyFirebaseMessagingService
+        // is accessible from this Activity
+        // ... (your existing mostrarNotificacion code, if any) ...
+    }
+
+    // ... (rest of your activity code) ...
+
+    // Handle the result of the permission request
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 123) { // Use the same request code you used while requesting the permission
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // The VIBRATE permission is granted. You can proceed with showing the notification.
+                mostrarNotificacion("Nueva Cita", "Has recibido una nueva cita.")
+            } else {
+                // The VIBRATE permission is not granted. Handle the scenario accordingly.
+                // In this example, I'll just log a message.
+                Log.d("MostrarCitas", "VIBRATE permission not granted.")
+            }
+        }
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_item0 -> {
@@ -401,12 +450,6 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 finish()
             }
             R.id.nav_logout -> {
-                //Cerrar sesión de Google
-                mAuth!!.signOut()
-                mGoogleSignInClient!!.signOut()
-                val intent = Intent(this, LogIn::class.java)
-                startActivity(intent)
-                finish()
                 //Cerrar Sesión
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
                 val editor = sharedPreferences.edit()
@@ -429,7 +472,6 @@ class MostrarCitas : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             super.onBackPressed()
         }
     }
-
 
 }
 

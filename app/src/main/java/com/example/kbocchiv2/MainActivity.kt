@@ -6,9 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.speech.RecognitionListener
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
@@ -20,16 +17,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import java.util.Locale
 
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
@@ -39,8 +31,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var drawerLayout: DrawerLayout? = null
     var navigationView: NavigationView? = null
     var toolbar: Toolbar? = null
-    var mAuth: FirebaseAuth? = null
-    var mGoogleSignInClient: GoogleSignInClient? = null
     var btnspeech: ImageButton? = null
     private var speechToText: SpeechToText? = null
 
@@ -51,21 +41,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar = findViewById(R.id.toolbar)
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.navigation_view)
-
         drawerLayout?.closeDrawer(GravityCompat.START)
-        mAuth = FirebaseAuth.getInstance()
         navigationView?.setNavigationItemSelectedListener(this)
-
-
         btnspeech = findViewById(R.id.btnSpeech)
 
-
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         val toogle = ActionBarDrawerToggle(
             this,
             drawerLayout,
@@ -211,12 +190,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 finish()
             }
             R.id.nav_logout -> {
-                //Cerrar sesión de Google
-                mAuth!!.signOut()
-                mGoogleSignInClient!!.signOut()
-                val intent = Intent(this, LogIn::class.java)
-                startActivity(intent)
-                finish()
                 //Cerrar Sesión
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
                 val editor = sharedPreferences.edit()

@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.MIC" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -65,9 +66,6 @@
             android:name=".mainChat"
             android:exported="false" />
         <activity
-            android:name=".Agenda"
-            android:exported="false" />
-        <activity
             android:name=".Splash"
             android:exported="true">
             <intent-filter>
@@ -84,11 +82,16 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -96,5 +99,4 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBB3HIJ5YYiXHdBoxx1nwbRsUc7ZyPmg4s" />
     </application>
-
 </manifest>

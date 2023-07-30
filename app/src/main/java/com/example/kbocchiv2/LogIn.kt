@@ -1,15 +1,12 @@
 package com.example.kbocchiv2
 
-import POJO.RequestPacientes
-import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -17,45 +14,34 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.example.kbocchiv2.Interfaces.ApiService
 import com.example.kbocchiv2.Request.LoginRequest
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN
-import com.google.android.gms.common.SignInButton
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.ResponseBody
-import okio.buffer
-import okio.source
 
 class LogIn : AppCompatActivity() {
 
 
     private val BASE_URL = "https://kbocchi.onrender.com/"
     private val RC_SIGN_IN = 1
-
     private lateinit var apiService: ApiService
     private lateinit var editusuario: EditText
     private lateinit var editpass: EditText
     private lateinit var botonlogin: Button
-
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
-    private lateinit var mAuth: FirebaseAuth
-
-    private lateinit var mSignInButtonGoogle: SignInButton
-
     public lateinit var terapeutas : LoginRequest
-
     private lateinit var restablecerContrasena: Button
+
+    private val client = OkHttpClient()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +49,6 @@ class LogIn : AppCompatActivity() {
         editusuario = findViewById(R.id.user);
         editpass = findViewById(R.id.pass);
         botonlogin = findViewById(R.id.login)
-        mSignInButtonGoogle = findViewById(R.id.btngoogle)
         restablecerContrasena = findViewById(R.id.restablecer)
 
         restablecerContrasena.setOnClickListener {
@@ -105,18 +90,6 @@ class LogIn : AppCompatActivity() {
             finish() // Finalizar la actividad actual para que no se pueda volver atrás
         }
 
-        mAuth = FirebaseAuth.getInstance()
-
-        val gso = GoogleSignInOptions.Builder(DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-
-        mSignInButtonGoogle.setOnClickListener {
-            signIn()
-        }
 
         botonlogin.setOnClickListener {
             val email = editusuario.text.toString().trim()
@@ -175,7 +148,7 @@ class LogIn : AppCompatActivity() {
                         editor4.apply()
                         Log.e("id paciente ", "ID DEL TERAPEUTA: $id_Usuario", )
 
-
+                        notificacion()
                         Toast.makeText(this@LogIn, "Inicio de sesion exitoso", Toast.LENGTH_SHORT).show()
 
                     } else {
@@ -191,12 +164,10 @@ class LogIn : AppCompatActivity() {
         }
 
     }
-
     private fun esCorreoValido(correo: String): Boolean {
 
     return correo.contains("@") && correo.contains(".com") && correo.contains("gmail")
     }
-
     private fun cumpleRequisitos(contrasena: String): Boolean {
         val longitudMinima = 8
         val letraMayuscula = contrasena.matches(Regex(".*[A-Z].*"))
@@ -204,67 +175,61 @@ class LogIn : AppCompatActivity() {
         return contrasena.length >= longitudMinima && letraMayuscula
     }
 
-
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = mAuth.currentUser
-        updateUI(currentUser)
-    }
-
-    private fun signIn() {
-        val signInIntent = mGoogleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)
-                account.idToken?.let { firebaseAuthWithGoogle(it) }
-
-
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+    private fun notificacion() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
             }
-        }
+
+            // Get new FCM registration token
+            val token = task.result
+                // Aquí llamamos a la función para enviar el token y el ID del usuario al servidor
+            enviarTokenYUsuarioAServidor(token)
+
+
+            Toast.makeText(this@LogIn, token, Toast.LENGTH_SHORT).show()
+        })
     }
 
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
+    private fun enviarTokenYUsuarioAServidor(token: String) {
+        val idUsuario = terapeutas.id
 
+        val notification = JSONObject()
 
-                    // Sign in success, update UI with the signed-in user's information
-                    irHome()
-                    val user = mAuth.currentUser
-                    updateUI(user)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Toast.makeText(this@LogIn, task.exception.toString(), Toast.LENGTH_SHORT).show()
-                    updateUI(null)
+        notification.put("token", token)
+        notification.put("id_usuario", idUsuario)
+
+        val requestBody = notification.toString().toRequestBody("application/json".toMediaType())
+        val request = Request.Builder()
+            .url("https://kbocchi.onrender.com/fcmtokens")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                e.printStackTrace()
+                runOnUiThread {
+                    Toast.makeText(applicationContext, "Error al crear el token", Toast.LENGTH_SHORT).show()
+
                 }
             }
-    }
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                val responseData = response.body?.string()
+                if (response.isSuccessful && responseData != null) {
+                    val notificacionCreada = JSONObject(responseData)
+                    runOnUiThread {
 
-    private fun updateUI(user: FirebaseUser?) {
-        val currentUser = mAuth.currentUser
-        if (currentUser != null) {
-            irHome()
-        }
-    }
-    private fun irHome() {
-        val intent = Intent(this@LogIn, MainActivity::class.java)
-        startActivity(intent)
-        finish()
+                        Toast.makeText(applicationContext, "Token creado exitosamente", Toast.LENGTH_SHORT).show()
+
+                    }
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(applicationContext, "Error al crear el token", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        })
     }
 
 }

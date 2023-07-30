@@ -24,7 +24,6 @@ public interface ApiService {
     @POST("usuarios/fisioterapeutas/login")
     Call<LoginRequest> login_call(@Field("email") String email, @Field("contrasena") String contrasena);
 
-
     @GET("usuarios/fisioterapeutas/pacientes/{id_terapeuta}")
     Call<List<RequestPacientes>> obtenerPacientes(@Path("id_terapeuta") String idTerapeuta);
 

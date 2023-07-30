@@ -25,9 +25,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
 import com.example.kbocchiv2.Interfaces.ApiService
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -72,16 +70,12 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private var idpaciente: Int = 0
-
-
     private lateinit var spinnerSelect : Spinner
     private lateinit var spinnerSelect2 : Spinner
     private var pacientes: List<RequestPacientes> = ArrayList()
     private lateinit var adapter: ArrayAdapter<String>
-
     private var selectedDate: String = ""
     private var selectedTime: String = ""
-
     var drawerLayout: DrawerLayout? = null
     var navigationView: NavigationView? = null
     var mAuth: FirebaseAuth? = null
@@ -119,20 +113,11 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
             }
         }
 
-
-
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.navigation_view)
-
         drawerLayout?.closeDrawer(GravityCompat.START)
-        mAuth = FirebaseAuth.getInstance()
         navigationView?.setNavigationItemSelectedListener(this)
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         val toogle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_close, R.string.navigation_drawer_close)
         drawerLayout?.addDrawerListener(toogle)
         toogle.syncState()
@@ -257,7 +242,6 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val token = sharedPreferences.getString("token", null)
 
-
         citaData.put("fecha", agendarFecha.text.toString() + " " + agendarHora.text.toString())
         citaData.put("lng", longitude)
         citaData.put("lat", latitude)
@@ -337,7 +321,6 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         adapter.addAll(nombres)
         adapter.notifyDataSetChanged()
 
-
         spinnerSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val paciente = pacientes.getOrNull(position -1)
@@ -404,12 +387,6 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                 finish()
             }
             R.id.nav_logout -> {
-                //Cerrar sesión de Google
-                mAuth!!.signOut()
-                mGoogleSignInClient!!.signOut()
-                val intent = Intent(this, LogIn::class.java)
-                startActivity(intent)
-                finish()
                 //Cerrar Sesión
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
                 val editor = sharedPreferences.edit()
