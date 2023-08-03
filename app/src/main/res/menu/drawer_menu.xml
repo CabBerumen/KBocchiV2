@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view"
     >
-
     <group android:checkableBehavior="single">
         <item
             android:id = "@+id/nav_item0"
@@ -34,7 +33,6 @@
             android:icon = "@drawable/nav_paciente"
             android:title="Pacientes"/>
 
-
     </group>
 
     <item
@@ -44,18 +42,10 @@
                 android:id = "@+id/nav_perfil"
                 android:icon ="@drawable/nav_profile"
                 android:title="Perfil"/>
-
-            <item
-                android:id = "@+id/nav_item5"
-                android:icon ="@drawable/nave_settings"
-                android:title="@string/nav_item5"/>
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/nav_logout"
                 android:title="Logout"/>
         </menu>
-
-
     </item>
-
 </menu>

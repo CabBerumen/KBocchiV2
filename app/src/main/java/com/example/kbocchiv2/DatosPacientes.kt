@@ -2,13 +2,10 @@ package com.example.kbocchiv2
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -16,22 +13,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.ktx.Firebase
-import com.squareup.picasso.Picasso
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import javax.sql.DataSource
-import com.bumptech.glide.request.target.Target
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -41,15 +28,11 @@ class DatosPacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     var telp: TextView? = null
     var correo: TextView? = null
     private lateinit var imgpaciente: CircleImageView
-
     var firebaseStorage: FirebaseStorage? = null
-
     var toolbar: Toolbar? = null
-
     var drawerLayout: DrawerLayout? = null
     var navigationView: NavigationView? = null
-    var mAuth: FirebaseAuth? = null
-    var mGoogleSignInClient: GoogleSignInClient? = null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,14 +48,7 @@ class DatosPacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         navigationView = findViewById(R.id.navigation_view)
 
         drawerLayout?.closeDrawer(GravityCompat.START)
-        mAuth = FirebaseAuth.getInstance()
         navigationView?.setNavigationItemSelectedListener(this)
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
         val toogle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_close, R.string.navigation_drawer_open)
         drawerLayout?.addDrawerListener(toogle)
@@ -228,12 +204,6 @@ class DatosPacientes : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 finish()
             }
             R.id.nav_logout -> {
-                //Cerrar sesión de Google
-                mAuth!!.signOut()
-                mGoogleSignInClient!!.signOut()
-                val intent = Intent(this, LogIn::class.java)
-                startActivity(intent)
-                finish()
                 //Cerrar Sesión
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
                 val editor = sharedPreferences.edit()

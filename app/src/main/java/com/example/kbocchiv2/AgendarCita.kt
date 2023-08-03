@@ -196,8 +196,9 @@ class AgendarCita : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
         buttonCita.setOnClickListener {
             crearCita()
+            val intent = Intent(this@AgendarCita, MostrarCitas::class.java)
+            startActivity(intent)
         }
-
     }
 
     private fun showDatePicker() {

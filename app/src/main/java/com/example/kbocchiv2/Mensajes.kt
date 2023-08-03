@@ -236,7 +236,6 @@ class Mensajes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     }
 
     private fun sendMessage(message: String, ) {
-
       //  val data = JSONObject().apply {
         val data =  JSONObject()
             val intent = intent
@@ -249,7 +248,7 @@ class Mensajes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 socket.emit("mensajes:enviar", data)
         }
 
-        addMessage("Yo: $message")
+       // addMessage("Yo: $message")
     }
 
    // @SuppressLint("NotifyDataSetChanged")
@@ -309,12 +308,7 @@ class Mensajes : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         }
 
         val intent = Intent(this, Mensajes::class.java)
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            notificationId,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val pendingIntent = PendingIntent.getActivity(this, notificationId, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_notification)

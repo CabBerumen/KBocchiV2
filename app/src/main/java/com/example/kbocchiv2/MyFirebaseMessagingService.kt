@@ -12,11 +12,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService(){
             val senderName = remoteMessage.data["nombre"] ?: ""
 
             mostrarNotificacion(title, body, senderName)
+
         }
     }
+    override fun onNewToken(token: String) {
 
+    }
     private fun mostrarNotificacion(title: String, body: String, senderName: String) {
-        // Implementa aquí la lógica para mostrar la notificación en la barra de notificaciones.
-        // Puedes utilizar el mismo código que se muestra en la función `mostrarNotificacion` anterior.
+
     }
 }
+

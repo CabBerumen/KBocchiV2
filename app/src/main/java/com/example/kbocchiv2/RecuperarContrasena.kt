@@ -1,14 +1,13 @@
 package com.example.kbocchiv2
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.preference.PreferenceManager
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
@@ -43,9 +42,8 @@ class RecuperarContrasena : AppCompatActivity() {
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 val correo = charSequence.toString()
 
-                if (esCorreoValido(correo)) {
-                    botoncontrasena.isEnabled= true
-                } else {
+                if (esCorreoValido(correo)) { botoncontrasena.isEnabled= true }
+                else {
                     botoncontrasena.isEnabled = false
                 }
             }

@@ -275,8 +275,8 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_menu"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        app:itemIconTint="#404040"
+        app:itemTextColor="#404040"
         >
 
     </com.google.android.material.navigation.NavigationView>

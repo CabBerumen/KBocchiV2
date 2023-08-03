@@ -2,13 +2,13 @@ package com.example.kbocchiv2
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -29,8 +29,6 @@ class Perfil : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
     var drawerLayout: DrawerLayout? = null
     var navigationView: NavigationView? = null
     var toolbar: Toolbar? = null
-
-
     var emailText: TextView? = null
     var nombreText: TextView? = null
     var telText: TextView? = null
